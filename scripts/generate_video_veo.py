@@ -1,4 +1,5 @@
-"""Generate a single video clip using Veo 3.1.
+"""(FALLBACK — the default Google video model is now Omni: scripts/generate_video_omni.py)
+Generate a single video clip using Veo 3.1.
 
 Usage:
     # Text-to-video

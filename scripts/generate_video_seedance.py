@@ -1,9 +1,9 @@
-"""Generate video using Seedance 2.0 via BytePlus Ark direct API.
+"""Generate video using Seedance 2.5 / 2.0 via BytePlus Ark direct API.
 
 Endpoint: https://ark.ap-southeast.bytepluses.com/api/v3/contents/generations/tasks
 
 Usage:
-    # Image-to-video (image must be a public URL; local files auto-upload to R2)
+    # Image-to-video (image must be a fetchable URL; local files auto-upload to S3)
     python scripts/generate_video_seedance.py --prompt "..." --image scene.png --output clip.mp4
 
     # Text-to-video (no image)
@@ -25,48 +25,36 @@ Usage:
     python scripts/generate_video_seedance.py --prompt "..." \
         --image scene.png --output clip.mp4 --model fast
 
+    # Seedance 2.5: 30s one-shot ad with a still + several motion/camera reference videos
+    python scripts/generate_video_seedance.py --model 2.5 --duration 30 --prompt "... refer to @Image1 ... camera like @Video1 ..." \
+        --image product.png --ref-video move_a.mp4 --ref-video move_b.mp4 --task-type reference --output ad.mp4
+
+    # Seedance 2.5: first + last frame (ratio auto = adaptive)
+    python scripts/generate_video_seedance.py --model 2.5 --prompt "..." \
+        --first-frame start.png --last-frame end.png --duration 8 --output clip.mp4
+
+    # Seedance 2.5: edit / extend an existing clip (4-30s source; prompt must say edit/remove/replace or extend/continue)
+    python scripts/generate_video_seedance.py --model 2.5 --task-type edit --prompt "Video edit: remove the person in @Video1" \
+        --ref-video clip.mp4 --output clip_edit.mov --output-format mov
+    python scripts/generate_video_seedance.py --model 2.5 --task-type extend --duration 10 --prompt "Extend @Video1 forward: ..." \
+        --ref-video clip.mp4 --output clip_ext.mp4
+
     # Custom duration/ratio
     python scripts/generate_video_seedance.py --prompt "..." \
         --image scene.png --output clip.mp4 --duration 10 --ratio 9:16
 
 Requires:
     ARK_API_KEY in environment (BytePlus Ark)
-    R2_* env vars for auto-upload of local files (optional if using URLs)
+    S3_BUCKET (+ S3_REGION, optional S3_PUBLIC_URL) for auto-upload of local files; see scripts/media_host.py
 """
 import os, sys, argparse, json, time, urllib.request
 
 
-def upload_to_r2(local_path, prefix="seedance"):
-    """Upload a local file to R2 and return the public URL."""
-    try:
-        import boto3
-        account = os.environ.get("R2_ACCOUNT")
-        access = os.environ.get("R2_ACCESS_KEY")
-        secret = os.environ.get("R2_SECRET_KEY")
-        bucket = os.environ.get("R2_BUCKET")
-        public_url = os.environ.get("R2_PUBLIC_URL")
-        if not all([account, access, secret, bucket, public_url]):
-            return None
-        s3 = boto3.client("s3",
-            endpoint_url=f"https://{account}.r2.cloudflarestorage.com",
-            aws_access_key_id=access,
-            aws_secret_access_key=secret,
-            region_name="auto",  # Cloudflare R2 requires one of: wnam, enam, weur, eeur, apac, oc, auto
-        )
-        basename = os.path.basename(local_path)
-        key = f"{prefix}/{basename}"
-        ext = os.path.splitext(local_path)[1].lower()
-        content_types = {
-            ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
-            ".webp": "image/webp", ".mp4": "video/mp4", ".mov": "video/quicktime",
-            ".mp3": "audio/mpeg", ".wav": "audio/wav",
-        }
-        content_type = content_types.get(ext, "application/octet-stream")
-        s3.upload_file(local_path, bucket, key, ExtraArgs={"ContentType": content_type})
-        return f"{public_url}/{key}"
-    except Exception as e:
-        print(f"R2 upload failed: {e}")
-        return None
+def upload_to_host(local_path, prefix="seedance"):
+    """Upload a local file to the configured host (S3 default, R2 legacy) and return a fetchable URL."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from media_host import upload_public
+    return upload_public(local_path, prefix)
 
 
 def resolve_url(local_path, url, label="file", prefix="seedance"):
@@ -75,10 +63,10 @@ def resolve_url(local_path, url, label="file", prefix="seedance"):
         return url
     if not local_path:
         return None
-    print(f"Uploading {label} {local_path} to R2...")
-    result = upload_to_r2(local_path, prefix)
+    print(f"Uploading {label} {local_path} to S3...")
+    result = upload_to_host(local_path, prefix)
     if not result:
-        print(f"ERROR: Could not upload {label}. Set R2_* env vars or use a URL flag.")
+        print(f"ERROR: Could not upload {label}. Set S3_BUCKET (+S3_REGION) or use a URL flag.")
         sys.exit(1)
     print(f"  -> {result}")
     return result
@@ -86,8 +74,17 @@ def resolve_url(local_path, url, label="file", prefix="seedance"):
 
 ARK_BASE = "https://ark.ap-southeast.bytepluses.com/api/v3"
 MODELS = {
-    "full": "dreamina-seedance-2-0-260128",
-    "fast": "dreamina-seedance-2-0-fast-260128",
+    "2.5":  "dreamina-seedance-2-5-260628",       # up to 30s, 50 refs (30 img + 10 vid + 10 audio), edit/extend, mov output
+    "full": "dreamina-seedance-2-0-260128",       # Seedance 2.0 quality, up to 15s, 4K
+    "fast": "dreamina-seedance-2-0-fast-260128",  # drafts
+    "mini": "dreamina-seedance-2-0-mini-260615",  # cheapest, 720p max
+}
+# Per-model reference limits (images, videos, audios, max duration seconds)
+LIMITS = {
+    "2.5":  (30, 10, 10, 30),
+    "full": (9, 3, 3, 15),
+    "fast": (9, 3, 3, 15),
+    "mini": (9, 3, 3, 15),
 }
 
 
@@ -117,19 +114,28 @@ def main():
     )
     parser.add_argument("--prompt", required=True, help="Video generation prompt")
     parser.add_argument("--output", required=True, help="Output file path (.mp4)")
-    parser.add_argument("--model", default="full", choices=["full", "fast"],
-                        help="full = dreamina-seedance-2-0-260128 (quality), fast = cheaper/faster")
+    parser.add_argument("--model", default="full", choices=list(MODELS.keys()),
+                        help="2.5 = Seedance 2.5 (30s, 50 refs, edit/extend); full = Seedance 2.0 (quality); "
+                             "fast = 2.0 fast (drafts); mini = 2.0 mini (cheapest)")
     parser.add_argument("--image", action="append", default=[],
                         help="Local reference image (repeatable, up to 9; first is the opening frame)")
     parser.add_argument("--image-url", action="append", default=[],
                         help="Hosted reference image URL (repeatable)")
-    parser.add_argument("--ref-video", default=None, help="Local reference video file")
-    parser.add_argument("--ref-video-url", default=None, help="Hosted reference video URL")
-    parser.add_argument("--ref-audio", default=None, help="Local reference audio file (BGM)")
-    parser.add_argument("--ref-audio-url", default=None, help="Hosted reference audio URL")
-    parser.add_argument("--duration", type=int, default=8,
+    parser.add_argument("--first-frame", default=None, help="Local image used as FIRST frame (role=first_frame; ratio forced to adaptive)")
+    parser.add_argument("--first-frame-url", default=None, help="Hosted first-frame image URL")
+    parser.add_argument("--last-frame", default=None, help="Local image used as LAST frame (role=last_frame; needs --first-frame)")
+    parser.add_argument("--last-frame-url", default=None, help="Hosted last-frame image URL")
+    parser.add_argument("--ref-video", action="append", default=[], help="Local reference video file (repeatable; 2.5: up to 10)")
+    parser.add_argument("--ref-video-url", action="append", default=[], help="Hosted reference video URL (repeatable)")
+    parser.add_argument("--ref-audio", action="append", default=[], help="Local reference audio file (repeatable; 2.5: up to 10)")
+    parser.add_argument("--ref-audio-url", action="append", default=[], help="Hosted reference audio URL (repeatable)")
+    parser.add_argument("--task-type", default=None, choices=["auto", "reference", "edit", "extend"],
+                        help="omni_reference_task_type (Seedance 2.5): reference | edit (ratio=adaptive, duration=-1) | extend | auto")
+    parser.add_argument("--output-format", default=None, choices=["mp4", "mov"],
+                        help="Seedance 2.5 only: mov = H.264 yuv444p + PCM (better color fidelity for edit/extend)")
+    parser.add_argument("--duration", type=int, default=8,  # -1 = model picks (2.5 supports 4-30s, 2.0 series 4-15s)
                         help="Duration in seconds (default: 8)")
-    parser.add_argument("--ratio", default="16:9",
+    parser.add_argument("--ratio", default="16:9",  # 21:9 16:9 4:3 1:1 3:4 9:16 adaptive
                         help="Aspect ratio: 16:9, 9:16, 1:1, 4:3, 3:4, 21:9 (default: 16:9)")
     parser.add_argument("--generate-audio", action="store_true", default=True,
                         help="Generate synchronized audio (default: on)")
@@ -159,56 +165,82 @@ def main():
         url = resolve_url(img, None, "image")
         if url:
             image_urls.append(url)
-    video_url = resolve_url(args.ref_video, args.ref_video_url, "reference video")
-    audio_url = resolve_url(args.ref_audio, args.ref_audio_url, "reference audio")
+    video_urls = list(args.ref_video_url) + [u for u in (resolve_url(v, None, "reference video") for v in args.ref_video) if u]
+    audio_urls = list(args.ref_audio_url) + [u for u in (resolve_url(a, None, "reference audio") for a in args.ref_audio) if u]
+    first_url = resolve_url(args.first_frame, args.first_frame_url, "first frame")
+    last_url = resolve_url(args.last_frame, args.last_frame_url, "last frame")
 
-    if len(image_urls) > 9:
-        print(f"ERROR: Max 9 reference images allowed (got {len(image_urls)}).")
+    max_img, max_vid, max_aud, max_dur = LIMITS[args.model]
+    if len(image_urls) > max_img:
+        print(f"ERROR: Max {max_img} reference images for model {args.model} (got {len(image_urls)}).")
+        sys.exit(1)
+    if len(video_urls) > max_vid or len(audio_urls) > max_aud:
+        print(f"ERROR: Max {max_vid} reference videos / {max_aud} audios for model {args.model}.")
+        sys.exit(1)
+    if args.duration != -1 and not (4 <= args.duration <= max_dur):
+        print(f"ERROR: duration must be 4-{max_dur}s (or -1 = auto) for model {args.model}.")
+        sys.exit(1)
+    if last_url and not first_url:
+        print("ERROR: --last-frame requires --first-frame.")
         sys.exit(1)
 
     # Build content array
     content = [{"type": "text", "text": args.prompt}]
+    if first_url:
+        content.append({"type": "image_url", "image_url": {"url": first_url}, "role": "first_frame"})
+    if last_url:
+        content.append({"type": "image_url", "image_url": {"url": last_url}, "role": "last_frame"})
     for url in image_urls:
-        content.append({
-            "type": "image_url",
-            "image_url": {"url": url},
-            "role": "reference_image",
-        })
-    if video_url:
-        content.append({
-            "type": "video_url",
-            "video_url": {"url": video_url},
-            "role": "reference_video",
-        })
-    if audio_url:
-        content.append({
-            "type": "audio_url",
-            "audio_url": {"url": audio_url},
-            "role": "reference_audio",
-        })
+        content.append({"type": "image_url", "image_url": {"url": url}, "role": "reference_image"})
+    for url in video_urls:
+        content.append({"type": "video_url", "video_url": {"url": url}, "role": "reference_video"})
+    for url in audio_urls:
+        content.append({"type": "audio_url", "audio_url": {"url": url}, "role": "reference_audio"})
+
+    ratio = args.ratio
+    duration = args.duration
+    # Seedance constraints: first/last-frame and edit/extend tasks require ratio=adaptive; edit requires duration=-1
+    if first_url and ratio != "adaptive":
+        print("NOTE: first-frame task -> ratio forced to 'adaptive' (output keeps the first frame's aspect).")
+        ratio = "adaptive"
+    if args.task_type in ("edit", "extend") and ratio != "adaptive":
+        print(f"NOTE: {args.task_type} task -> ratio forced to 'adaptive'.")
+        ratio = "adaptive"
+    if args.task_type == "edit" and duration != -1:
+        print("NOTE: edit task -> duration forced to -1 (keeps source duration).")
+        duration = -1
 
     body = {
         "model": MODELS[args.model],
         "content": content,
         "generate_audio": (not args.no_audio) and args.generate_audio,
-        "ratio": args.ratio,
-        "duration": args.duration,
+        "ratio": ratio,
+        "duration": duration,
         "watermark": args.watermark,
     }
+    if args.task_type:
+        body["omni_reference_task_type"] = args.task_type
+    if args.output_format:
+        if args.model != "2.5" and args.output_format == "mov":
+            print("WARNING: mov output is Seedance 2.5 only; ignoring for", args.model)
+        else:
+            body["output_format"] = args.output_format
     if args.seed is not None:
         body["seed"] = args.seed
 
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
 
     # Submit task
-    print(f"Submitting Seedance 2.0 | model={args.model} | {args.duration}s | ratio={args.ratio}")
+    print(f"Submitting Seedance | model={args.model} ({MODELS[args.model]}) | {duration}s | ratio={ratio}")
     print(f"  Prompt: {args.prompt[:100]}{'...' if len(args.prompt) > 100 else ''}")
     if image_urls:
         print(f"  Images: {len(image_urls)} reference(s)")
-    if video_url:
-        print(f"  Ref video: {video_url}")
-    if audio_url:
-        print(f"  Ref audio: {audio_url}")
+    if first_url:
+        print(f"  First frame: {first_url}" + (f" -> last frame: {last_url}" if last_url else ""))
+    for v in video_urls:
+        print(f"  Ref video: {v}")
+    for a in audio_urls:
+        print(f"  Ref audio: {a}")
 
     try:
         submit = ark_request("POST", "/contents/generations/tasks", api_key, body)

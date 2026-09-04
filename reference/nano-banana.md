@@ -1,15 +1,27 @@
+> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
 # Nano Banana 2 -- Complete Image Prompting Guide
+
+> **2026-09 update — model ids.** `generate_image_gemini.py` aliases: `--model nb2` → `gemini-3.1-flash-image` (Nano Banana 2, GA, default; the `-preview` id still works),
+> `--model pro` → `gemini-3-pro-image` (Nano Banana Pro — best likeness, typography and brand-text fidelity; use for hero stills, packaging, anything with words),
+> `--model lite` → `gemini-3.1-flash-lite-image` (Nano Banana 2 Lite — cheapest, for coverage/variants). Run `python scripts/list_models.py --filter image` when in doubt.
+> `--size` is ignored unless the installed `google-genai` exposes `ImageConfig.image_size` (1.47.0 does not).
+
 
 Source: Google Cloud Blog "The ultimate Nano Banana prompting guide" + Google DeepMind prompt guide
 
-## Models
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Models
 
 | Model | API ID | Base | Speed | Text Rendering |
 |-------|--------|------|-------|----------------|
 | Nano Banana 2 | `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash | Fast | Short words only |
 | Nano Banana Pro | `gemini-3-pro-image-preview` | Gemini 3 Pro | Slower | Flawless sentences |
 
-### Tech Specs
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Tech Specs
 
 | Spec | Nano Banana 2 (3.1 Flash) | Nano Banana Pro (3 Pro) |
 |------|---------------------------|------------------------|
@@ -24,25 +36,37 @@ Source: Google Cloud Blog "The ultimate Nano Banana prompting guide" + Google De
 | Live data | Real-time web search | Real-time web search |
 | Trust & safety | C2PA + SynthID watermark | C2PA + SynthID watermark |
 
-### API Parameters
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# API Parameters
 
 ```python
 config=types.GenerateContentConfig(
-    response_modalities=["TEXT", "IMAGE"],  # MUST include IMAGE
+    response_modalities=["TEXT", "IMAGE"],  > **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# MUST include IMAGE
     image_config=types.ImageConfig(
-        aspect_ratio="16:9",   # any supported ratio
-        image_size="2K",       # 512, 1K, 2K, 4K (uppercase K)
+        aspect_ratio="16:9",   > **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# any supported ratio
+        image_size="2K",       > **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# 512, 1K, 2K, 4K (uppercase K)
     ),
 )
 ```
 
 ---
 
-## The Five Prompting Frameworks
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# The Five Prompting Frameworks
 
 Nano Banana uses deep reasoning to understand your prompt before generating. Start with a strong verb that tells the model the primary operation.
 
-### Framework 1: Image Generation
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Framework 1: Image Generation
 
 **Text-to-image (no references)**
 
@@ -77,7 +101,9 @@ Use this for:
 - Style merging (pass style reference + content description)
 - Set continuity (pass location ref + new camera angle)
 
-### Framework 2: Image Editing
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Framework 2: Image Editing
 
 **Conversational editing (without new references)**
 
@@ -101,7 +127,9 @@ Recreate this exact city street scene in the style of a Van Gogh oil painting.
 Keep the composition and perspective identical.
 ```
 
-### Framework 3: Real-Time Web Search
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Framework 3: Real-Time Web Search
 
 Nano Banana can search the web for current data before generating.
 
@@ -116,7 +144,9 @@ a realistic smartphone UI.
 
 Use for: localized marketing, current events visualization, educational tools, travel apps.
 
-### Framework 4: Text Rendering & Localization
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Framework 4: Text Rendering & Localization
 
 Rules for sharp, legible text:
 
@@ -141,7 +171,9 @@ filling the center of the frame. The text acts as a cut-out window.
 A photograph of New York skyline is visible ONLY inside the letterforms.
 ```
 
-### Framework 5: Prompting Like a Creative Director
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Framework 5: Prompting Like a Creative Director
 
 Stop typing keywords. Start directing the scene.
 
@@ -193,7 +225,9 @@ Don't say generic — say specific:
 
 ---
 
-## Golden Rules
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Golden Rules
 
 1. **Use natural language, full sentences** — write like briefing a human artist, not keyword soup
 2. **Be specific** — concrete details on subject, lighting, composition
@@ -205,15 +239,21 @@ Don't say generic — say specific:
 
 ---
 
-## Camera & Shot Types
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
 
-### Basic Shots
+# Camera & Shot Types
+
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Basic Shots
 - Close-up, Medium shot, Full shot, Long shot
 - Bird's eye view / top-down
 - Low-angle view, Eye-level, High-angle
 - Full body portrait, Profile portrait
 
-### Creative Shots
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Creative Shots
 - Drone view / top-down drone perspective
 - POV (point of view)
 - Macro lens, Fisheye lens
@@ -224,7 +264,9 @@ Don't say generic — say specific:
 
 ---
 
-## Composition
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Composition
 
 | Technique | Prompt Language |
 |-----------|----------------|
@@ -239,53 +281,77 @@ Don't say generic — say specific:
 
 ---
 
-## Style Keywords
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
 
-### Artistic Styles
+# Style Keywords
+
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Artistic Styles
 Flat illustration, Impressionist oil painting, Watercolor, Charcoal sketch, Ukiyo-e, Ink wash, Impasto, Manga illustration, Vector art, Pixel art, Voxel art, Post-Impressionism, Doodle/line art, Hand-drawn
 
-### 3D/Digital
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# 3D/Digital
 3D render, C4D render, Octane render, Claymation style, 3D embossed glossy contour
 
-### Photography & Film
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Photography & Film
 B&W photography, Cinematic, Polaroid, Documentary photography, Photorealistic, Ultra-realistic, Editorial photography, Film grain texture
 
-### Genre Styles
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Genre Styles
 Ghibli style, Cyberpunk, Vaporwave, Norse mythology, Rococo art, Fashion magazine, Retro-futuristic, 1999 hacker aesthetic, Modern minimalist
 
 ---
 
-## Quality Keywords
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Quality Keywords
 
 `masterpiece, high quality, incredible details, 8K, ultra-high detail, sharp focus, fine film grain, pixel-perfect, hyper-realistic, professional, award-winning`
 
 ---
 
-## Color & Mood
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Color & Mood
 
 `muted warm tones, pastel palette, teal-tinted fog, vibrant anime palette, cinematic teal-and-orange grade, neon cyan glow, moody ethereal atmosphere, high saturation, cold overcast, dramatic teal and magenta`
 
 ---
 
-## Character Consistency
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
 
-### Identity Locking
+# Character Consistency
+
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Identity Locking
 Explicitly instruct: **"Keep the person's facial features exactly the same."**
 
-### Reference Image Method (recommended for films)
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Reference Image Method (recommended for films)
 1. Generate 1:1 reference portrait with neutral background
 2. Pass this portrait as first content item in every scene prompt
 3. Include identical Character Lock Block text description every time
 4. Prepend: "Use the attached reference image. Keep facial features, hair, and build exactly the same."
 
-### Set/Location Consistency
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Set/Location Consistency
 Same technique as characters — generate a location reference image and pass it into every scene at that location:
 1. Generate 16:9 wide shot of the full set with clear lighting
 2. Generate 16:9 close-up of key surfaces (workbench, desk)
 3. Pass these as refs alongside character refs (up to 14 total)
 4. Include identical Set Lock Block text description every time
 
-### Multi-Image Storyboarding
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Multi-Image Storyboarding
 - Generate sequential art in a single session
 - Maintain character identity/attire across frames
 - Vary angles, distances, expressions
@@ -293,7 +359,9 @@ Same technique as characters — generate a location reference image and pass it
 
 ---
 
-## Character Sheet Generation — the canonical prompt
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Character Sheet Generation — the canonical prompt
 
 **Who this is for:** anyone building a film or commercial who needs the same character across many scenes. Nano Banana 2 handles this better than third-party "character ID" services **when given the right prompt** — no Soul ID, no proprietary tools required.
 
@@ -305,7 +373,9 @@ Same technique as characters — generate a location reference image and pass it
 4. Save as `refs/character_sheets/<name>.png`.
 5. For every subsequent scene, attach the sheet as `--ref` alongside the location sheet. Include the character lock block in the text prompt. Every scene now has locked casting.
 
-### Canonical character-sheet prompt (Nano Banana 2)
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Canonical character-sheet prompt (Nano Banana 2)
 
 ```
 Using the attached reference image as the single source of truth for facial
@@ -351,7 +421,7 @@ Do not write text on the image. No subtitles, captions, labels, or numbering.
 **CLI usage:**
 
 ```bash
-python scripts/generate_image.py \
+python scripts/generate_image_gemini.py \
     --prompt "<paste the sheet prompt above>" \
     --ref ~/Desktop/project/refs/char_source.png \
     --aspect 16:9 \
@@ -364,7 +434,9 @@ python scripts/generate_image.py \
 
 ---
 
-## Location Sheet Generation — the canonical prompt
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Location Sheet Generation — the canonical prompt
 
 **Protocol:**
 1. Start with ONE usable reference image of the location.
@@ -373,7 +445,9 @@ python scripts/generate_image.py \
 4. Save as `refs/location_sheets/<location>.png`.
 5. Attach to every scene prompt in that location.
 
-### Canonical location-sheet prompt (Nano Banana 2)
+##> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Canonical location-sheet prompt (Nano Banana 2)
 
 ```
 Using the attached reference image as the single source of truth for the
@@ -418,7 +492,9 @@ Replace the bracketed placeholders in Panels 5-7 with the specific props/materia
 
 ---
 
-## Workflow: Nano Banana sheets → Seedream/Seedance downstream
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Workflow: Nano Banana sheets → Seedream/Seedance downstream
 
 For projects that need AI-generated video of faces via Seedance:
 
@@ -432,7 +508,9 @@ Skip the Seedream step (Nano Banana → Seedance direct) only if you're NOT usin
 
 ---
 
-## Editing Strategies (Conversational)
+#> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+# Editing Strategies (Conversational)
 
 1. **Change character** — swap subjects, keep style/setting
 2. **Adjust composition** — new angle with perspective-specific details

@@ -1,6 +1,22 @@
 # Seedance 2.0 — Video Generation
 
-Direct access via **BytePlus Ark** (`dreamina-seedance-2-0-*` models). The helper script `scripts/generate_video_seedance.py` handles task submission, polling, and download.
+> **2026-09 update — Seedance 2.5 is live on Ark** (`dreamina-seedance-2-5-260628`, released 2026-08-06). `scripts/generate_video_seedance.py --model 2.5`.
+>
+> | | Seedance 2.5 | 2.0 (`--model full`) | 2.0 fast | 2.0 mini (`--model mini`, `dreamina-seedance-2-0-mini-260615`) |
+> |---|---|---|---|---|
+> | Max duration | **4–30 s** (or `-1` auto) | 4–15 s | 4–15 s | 4–15 s |
+> | Refs per request | **50** (30 img + 10 video + 10 audio, ≤30 s of A/V refs) | 15 (9+3+3) | 15 | 15 |
+> | Audio-only reference | ✓ | ✗ | ✗ | ✗ |
+> | Resolution | 480p / 720p / 1080p (10-bit) | up to 4K | 720p | 720p |
+> | Output | mp4, **mov** (yuv444p + PCM) | mp4 | mp4 | mp4 |
+> | Edit / extend a video | ✓ (`--task-type edit|extend`, source 4–30 s) | ✓ | ✓ | ✓ |
+> | First/last frame roles | `--first-frame` / `--last-frame` (ratio auto→`adaptive`) | same | same | same |
+>
+> Rules the API enforces (the script forces them): first-frame, edit and extend tasks need `ratio=adaptive`; **edit** needs `duration=-1`; edit prompts must contain *edit / add / remove / replace*, extend prompts *extend / continue*. `--task-type reference` skips the intent guess. Reference-image roles are named in the prompt as `@Image1`, `@Video1`, `@Audio1`.
+> Real faces are **still blocked** (verification/likeness authorization via the Ark console, or their 10k virtual-human library); the Seedream 5.0 workaround below still applies. Activation needs a >USD 30 balance or a 2.5 resource pack.
+
+
+Direct access via **BytePlus Ark** (`dreamina-seedance-2-*` models). The helper script `scripts/generate_video_seedance.py` handles task submission, polling, and download. Local reference files are uploaded to **Amazon S3** by `scripts/media_host.py` (presigned 24 h URL unless `S3_PUBLIC_URL` is set); Cloudflare R2 is no longer the default.
 
 Sources: [BytePlus Ark docs](https://docs.byteplus.com/en/docs/ModelArk/1520757) | [Community Skill (MIT)](https://github.com/dexhunter/seedance2-skill)
 
@@ -54,7 +70,7 @@ The only repeatable path to get an AI character into a Seedance clip.
 
 **The pipeline:**
 1. Generate the character still with **Seedream 5.0** (BytePlus's own image model).
-2. Upload the result to R2.
+2. Upload the result to S3 (automatic).
 3. Feed to Seedance as the first-frame reference.
 
 Because Seedream outputs carry a subtle AI aesthetic that the Seedance filter tolerates, they pass where Nano Banana / Veo stills don't. BytePlus has also indicated that model-native outputs from the same account within 30 days are "trusted" as inputs (see [Digital Character Library](https://docs.byteplus.com/en/docs/ModelArk/2223965)) — the observed behavior matches that policy, though the classifier itself still decides case-by-case.
@@ -111,7 +127,7 @@ BytePlus offers a [Digital Character Library](https://docs.byteplus.com/en/docs/
 | Reference videos | Typically 1-3 | MP4 | For camera/motion/effects replication |
 | Reference audio | 1 | MP3, WAV | For BGM/voice tone |
 
-All references must be reachable via HTTPS URL. The script auto-uploads local files to Cloudflare R2 when `R2_*` env vars are set.
+All references must be reachable via HTTPS URL. The script auto-uploads local files to Amazon S3 (`scripts/media_host.py`; `S3_BUCKET` + `S3_REGION`, presigned 24 h URL unless `S3_PUBLIC_URL` is set).
 
 ### Request Body Shape
 
@@ -162,7 +178,7 @@ python scripts/generate_video_seedance.py \
     --prompt "Camera slowly dollies forward, gentle product rotation" \
     --image product.png --output clip.mp4
 
-# Hosted URL (no R2 needed)
+# Hosted URL (no upload needed)
 python scripts/generate_video_seedance.py \
     --prompt "..." --image-url https://example.com/scene.png --output clip.mp4
 
@@ -805,7 +821,7 @@ ffmpeg -y -i input.mp4 -r 24 -vsync cfr -c:v libx264 -preset fast -crf 18 -an ou
 1. **Clarify goal:** Video type (ad, drama, MV, educational, vlog)?
 2. **Check face policy:** Does it need photorealistic faces? If yes, use LTX or Veo instead.
 3. **Identify assets:** What images, videos, audio are available?
-4. **Upload to R2 (or pre-hosted):** Ark requires public HTTPS URLs. The script auto-uploads locals when `R2_*` env vars are set.
+4. **Upload to S3 (or pre-hosted):** Ark requires fetchable HTTPS URLs. The script auto-uploads locals via `media_host.py` when `S3_BUCKET` is set.
 5. **Assign roles:** Map each asset to function (first frame, char ref, camera ref, etc.)
 6. **Structure prompt:** Subject/scene -> Time-segmented descriptions -> Camera -> Audio -> Style
 7. **Check constraints:** Total files ≤12, no real faces, durations within limits.

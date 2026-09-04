@@ -89,13 +89,13 @@ See `reference/ltx.md` → "Image-to-Video Rule: describe transition, not subjec
 
 ---
 
-## `generate_image.py --size 2K` fails on current google-genai SDK
+## `generate_image_gemini.py --size 2K` (Nano Banana) fails on current google-genai SDK
 
 **Problem:** `ImageConfig(image_size="2K")` throws `Extra inputs are not permitted`. The installed `google-genai` doesn't accept `image_size` on `ImageConfig`.
 
 **Fix:** Drop `--size` entirely. Default output from Nano Banana 2 (gemini-3.1-flash-image-preview) is ~1376×768 for 16:9, which is fine for video first-frame reference.
 
-**Proper upstream fix:** remove or rename the `image_size` arg in `scripts/generate_image.py:46-47` until the SDK re-exposes it.
+**Proper upstream fix:** remove or rename the `image_size` arg in `scripts/generate_image_gemini.py` (was generate_image.py) until the SDK re-exposes it.
 
 ---
 
@@ -300,12 +300,12 @@ print(response.text)
 
 ## Image Hosting for Video APIs
 
-**Seedance (BytePlus Ark)** requires public HTTPS URLs for all references. The script auto-uploads locals to Cloudflare R2 when `R2_*` env vars are set.
+**Seedance (BytePlus Ark)** requires fetchable HTTPS URLs for all references. Since 2026-09 the scripts auto-upload locals to **Amazon S3** (`scripts/media_host.py`, `S3_BUCKET` + `S3_REGION`; presigned URLs so the bucket can stay private). R2 vars still work as a legacy path.
 
-**LTX** has its own `/upload` endpoint: POST returns a pre-signed URL + `storage_uri`; the script PUTs the file and passes `storage_uri` back as `image_uri`/`video_uri`/`audio_uri`. No R2 needed for LTX.
+**LTX** has its own `/upload` endpoint: POST returns a pre-signed URL + `storage_uri`; the script PUTs the file and passes `storage_uri` back as `image_uri`/`video_uri`/`audio_uri`. No S3 needed for LTX.
 
 ```bash
-# Seedance: R2 auto-upload
+# Seedance: S3 auto-upload
 python scripts/generate_video_seedance.py --image local.png ...
 
 # LTX: uploads via LTX /upload (no external storage needed)
@@ -315,7 +315,7 @@ python scripts/generate_video_ltx.py --image local.png ...
 python scripts/generate_video_ltx.py --image-url https://... ...
 ```
 
-R2 is free for reasonable usage. Set `R2_*` in config.env to enable Seedance auto-uploads.
+Set `S3_BUCKET`/`S3_REGION` in `~/config.env`; verify with `python scripts/media_host.py check`.
 
 ---
 
@@ -367,3 +367,47 @@ ffmpeg -y -i video.mp4 -i overlay.png \
 | **Total** | **~$11** | **23 clips** | **~$0.48 avg** |
 
 **Lesson:** Start with LTX Fast for iteration ($0.24/clip). Switch to Veo only for hero shots. Avoid Seedance for anything with faces.
+
+---
+
+## 2026-09 — Remotion → HyperFrames migration notes
+
+**Why we switched:** the Remotion template needed `npm install` (Chromium pull, 1–3 min), a React/TS build, `--gl=angle` hacks on Linux, and every edit meant touching JSX. HyperFrames is one `index.html` + GSAP: `lint` catches broken timelines in 2 s, `check` audits layout/contrast/motion in a browser, `snapshot` gives PNGs at any timestamp without rendering, and a 10 s 1080p draft renders in ~12 s on an M-series Mac.
+
+**What carried over unchanged:** the whole pre-assembly pipeline (lock blocks, refs, stills, clips, audio, CFR conversion), the `scenes.json` mental model (`build_hyperframes_timeline.py` accepts the same `--clip path:seconds` flags as the old Remotion builder), and the audio levels (VO 1.0 / music 0.10–0.15 / SFX 0.15–0.30).
+
+**Traps we hit:**
+- Tweening `volume` on an `<audio data-volume="0.15">` **replaces** the gain instead of scaling it — lint warns `audio_volume_tween_overrides_gain`. Carry the level in the tween, drop `data-volume`.
+- `<video>` inside a timed `<div>` breaks frame extraction (`video_nested_in_timed_element`). Text overlays are sibling clips.
+- `hyperframes init` writes skills into `~/.claude/skills` — fine once, noisy on every scaffold → `HYPERFRAMES_SKIP_SKILLS=1`.
+- The scaffold's `.clip { inset: 0 }` silently pins a "bottom-right" logo to the top-left.
+- Ken Burns on an `<img>` reports layout overflow unless marked `data-layout-allow-overflow`.
+
+## 2026-09 — Reference analysis is now a script, and it changes model choice
+
+Running `analyze_reference.py` on the Chanel 25 campaign film with a NORRA serum goal produced a brief that (a) turned a lateral-tracking single-take into a 5-shot vertical plan with matching camera vocabulary, (b) routed each shot to a model (Seedance for product/glass/water, Veo for anonymous body motion, still+Ken Burns for inserts), and (c) flagged fluid dispensing and typography as high-risk beats before we spent a cent. Treat the brief's `do_not_copy` list as a hard guardrail — the goal is the craft, never the brand's assets.
+
+Seedance 2.5's 10-video reference slots make the inspiration video a *generation input* too: cut the 2–3 most useful shots (≤30 s total) and pass them with `--ref-video` ("camera like @Video1"). Combined with the analysis this is the closest thing to "make me one like this" that actually works.
+
+## 2026-09-04 — Veo → Gemini Omni, Nano Banana → GPT Image 2
+
+Decision: Google video now goes through **Gemini Omni 1.1 Flash** and stills through **GPT Image 2**. Both verified live:
+a GPT Image 2 product still (label text rendered correctly first try — the thing Nano Banana kept garbling) animated by
+Omni image-to-video at 360p for ~$0.12, plus a 3 s 9:16 text-to-video with native audio.
+
+- Omni lives on the **Interactions API**, not `generate_videos`. The installed `google-genai` 1.47 (Python 3.9) has no
+  `client.interactions`; `google-genai` ≥ 2.x needs Python 3.10+. The script calls REST directly so nothing had to be upgraded.
+- The returned `uri` already ends in `:download?alt=media` — parse `files/<id>` out of it before polling/downloading.
+- Authenticate with the `x-goog-api-key` header. Putting `?key=` in the URL echoed the key back inside a 400 error body
+  (it landed in a transcript once — key rotated/rotate it). The script now redacts anything that looks like a key.
+- No duration field on Omni: `--duration` injects "A N-second continuous shot." — works within 3–10 s.
+- 360p drafts + `--previous <id>` refinement + `--upscale` is the cheapest iteration loop of any model here.
+- GPT Image 2 with `--ref` goes through the *edits* endpoint with all refs as `image[]`; say what each image is for.
+
+## 2026-09-04 — Ark activation is per model, and running tasks can't be cancelled
+
+Regenerating the BytePlus key fixed the 401s, but Seedance 2.5 still returned `ModelNotOpen` until it was activated in the
+ModelArk console (per-model switch; needs >USD 30 balance or a resource pack). 2.0 full/fast were already open. Once
+activated, `generate_video_seedance.py --model 2.5 --task-type reference --image-url <S3 url>` produced a 4 s 720p clip
+with audio in ~3.5 min. Lesson: check activation with an intentionally invalid request (e.g. `duration: 1`) — a valid
+minimal request on an open model **is a billed job**, and `DELETE /tasks/{id}` returns 409 once it is running.

@@ -22,7 +22,7 @@ Usage:
     # Text-to-video
     python scripts/generate_video_ltx.py --prompt "..." --output clip.mp4 --endpoint text-to-video
 
-    # End frame interpolation (ltx-2-3 only)
+    # End frame interpolation (ltx-2-3 / ltx-2-5)
     python scripts/generate_video_ltx.py --prompt "..." --image start.png --end-image end.png \
         --output clip.mp4
 
@@ -61,8 +61,12 @@ ENDPOINTS = {
     "retake":         "/retake",
 }
 
-# Model names supported by LTX API
-LTX_MODELS = ["ltx-2-fast", "ltx-2-pro", "ltx-2-3-fast", "ltx-2-3-pro"]
+# Model names supported by LTX API (ltx-2-fast / ltx-2-pro were retired 2026-08-15)
+#   ltx-2-3-fast / ltx-2-3-pro : t2v, i2v, last-frame; PRO also extend / retake / audio-to-video. 2-20s.
+#   ltx-2-5-fast / ltx-2-5-pro : newest look (Aug 2026), t2v, i2v, audio-to-video, last-frame, camera_motion.
+#                                6-20s (fast, up to 4K) / 6-10s (pro, up to 1080p). NO extend / retake -> use ltx-2-3-pro.
+LTX_MODELS = ["ltx-2-3-fast", "ltx-2-3-pro", "ltx-2-5-fast", "ltx-2-5-pro"]
+EXTEND_RETAKE_MODELS = ("ltx-2-3-pro",)
 
 
 def upload_local_to_ltx(local_path, api_key):
@@ -180,7 +184,7 @@ def main():
     # Image inputs
     parser.add_argument("--image", default=None, help="Local image (auto-uploaded)")
     parser.add_argument("--image-url", default=None, help="Image URL or storage_uri (already hosted)")
-    parser.add_argument("--end-image", default=None, help="Local end image (ltx-2-3 only)")
+    parser.add_argument("--end-image", default=None, help="Local end image (last_frame_uri; ltx-2-3 / ltx-2-5)")
     parser.add_argument("--end-image-url", default=None, help="End image URL or storage_uri")
 
     # Video inputs (for extend/retake)
@@ -272,8 +276,10 @@ def main():
                 body["last_frame_uri"] = end_image_uri
 
     elif ep == "extend":
-        # Extend supports ltx-2-pro or ltx-2-3-pro only
-        model = args.ltx_model if args.ltx_model in ("ltx-2-pro", "ltx-2-3-pro") else "ltx-2-3-pro"
+        # Extend is supported by ltx-2-3-pro only (2.5 family has no extend/retake)
+        model = args.ltx_model if args.ltx_model in EXTEND_RETAKE_MODELS else "ltx-2-3-pro"
+        if model != args.ltx_model:
+            print(f"NOTE: {args.ltx_model} does not support extend -> using {model}")
         body["model"] = model
         body["video_uri"] = video_uri
         body["duration"] = args.duration
@@ -284,7 +290,9 @@ def main():
             body["context"] = args.context
 
     elif ep == "retake":
-        model = args.ltx_model if args.ltx_model in ("ltx-2-pro", "ltx-2-3-pro") else "ltx-2-3-pro"
+        model = args.ltx_model if args.ltx_model in EXTEND_RETAKE_MODELS else "ltx-2-3-pro"
+        if model != args.ltx_model:
+            print(f"NOTE: {args.ltx_model} does not support retake -> using {model}")
         body["model"] = model
         body["video_uri"] = video_uri
         body["start_time"] = args.start_time
@@ -296,7 +304,7 @@ def main():
             body["resolution"] = args.resolution
 
     elif ep == "audio-to-video":
-        body["model"] = args.ltx_model if args.ltx_model.startswith("ltx-2-3") else "ltx-2-3-pro"
+        body["model"] = args.ltx_model if args.ltx_model.startswith(("ltx-2-3", "ltx-2-5")) else "ltx-2-3-pro"
         body["audio_uri"] = audio_uri
         if image_uri:
             body["image_uri"] = image_uri

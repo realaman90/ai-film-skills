@@ -195,7 +195,7 @@ You can generate the initial scene composition in **Nano Banana 2** (broader aes
 
 ```bash
 # Step 1: Nano Banana for the documentary scene sketch
-python scripts/generate_image.py \
+python scripts/generate_image_gemini.py \
     --prompt "Documentary phone-mirror selfie in a gym locker room..." \
     --ref refs/original_cast.png \
     --aspect 9:16 --output sketch/gym_sketch.png

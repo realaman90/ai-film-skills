@@ -1,8 +1,12 @@
+> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
 # Veo 3.1 -- Complete Video Prompting Guide
 
 Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google DeepMind prompt guide + Vertex AI docs
 
-## Models
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Models
 
 | Model | Resolution | Duration | Audio | Key Features |
 |-------|-----------|----------|-------|--------------|
@@ -11,7 +15,9 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 | `veo-3-generate-preview` | 720p/1080p | 4-8s | Native | Extension, interpolation |
 | `veo-2-generate-preview` | 720p | 5-8s | Silent | 1-2 per request |
 
-### Constraints
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Constraints
 - 1080p/4K require `duration_seconds=8`
 - Extensions: 720p only, max 148s total, veo-3.1 only (not lite)
 - Reference images: up to 3, veo-3.1 only (not lite)
@@ -19,7 +25,9 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 
 ---
 
-## Prompt Formula (from Google's official guide)
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Prompt Formula (from Google's official guide)
 
 ```
 [Cinematography] + [Subject] + [Action] + [Context] + [Style & Ambiance]
@@ -33,7 +41,9 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 
 **Front-load the most important element.** The model prioritizes what comes first.
 
-### Prompt Length
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Prompt Length
 - **50-75 words:** Single-focus scenes
 - **75-125 words:** Most projects (sweet spot)
 - **125-175 words:** Complex scenes requiring precise control
@@ -41,9 +51,13 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 
 ---
 
-## Camera Movements (ONE per clip)
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
 
-### Movement Types
+# Camera Movements (ONE per clip)
+
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Movement Types
 
 | Movement | Prompt Language | Effect |
 |----------|----------------|--------|
@@ -63,7 +77,9 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 | Whip pan | `fast whip pan to the right` | Energy, transition |
 | Fly through | `camera moves through the space continuously` | Immersion |
 
-### Shot Sizes
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Shot Sizes
 
 | Shot | Prompt Language | Use |
 |------|----------------|-----|
@@ -75,7 +91,9 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 | WS | `Wide shot of the lighthouse` | Establish location |
 | ELS | `Extreme long shot, tiny figure against vast ocean` | Scale, isolation |
 
-### Camera Angles
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Camera Angles
 
 | Angle | Prompt Language | Effect |
 |-------|----------------|--------|
@@ -86,7 +104,9 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 | Dutch angle | `Slight Dutch angle tilt` | Unease, tension |
 | POV | `First-person POV at eye level` | Immersion |
 
-### Lens Choices
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Lens Choices
 
 | Lens | Effect |
 |------|--------|
@@ -102,11 +122,15 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 
 ---
 
-## Lighting -- Name a Physical Source
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Lighting -- Name a Physical Source
 
 **Core rule:** Always name a PHYSICAL light source. This gives Veo lighting logic that stabilizes shadows.
 
-### Never Say This / Always Say This
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Never Say This / Always Say This
 
 | Bad | Good |
 |-----|------|
@@ -114,13 +138,17 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 | "dramatic lighting" | "single hard spotlight from upper left, deep shadows" |
 | "nice atmosphere" | "lit by neon signs reflecting off wet pavement" |
 
-### Light Sources
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Light Sources
 
 **Natural:** Golden hour, overcast daylight, moonlight, dappled forest light, window light
 **Artificial:** Neon signs, fluorescent, candlelight, screen glow, streetlights, spotlight
 **Mixed:** Window light in interior, streetlights at dusk
 
-### Cinematic Lighting Styles
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Cinematic Lighting Styles
 
 | Style | Description |
 |-------|-------------|
@@ -133,11 +161,15 @@ Source: Google Cloud Blog "The ultimate prompting guide for Veo 3.1" + Google De
 
 ---
 
-## Audio Direction
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Audio Direction
 
 Veo 3.1 generates synchronized audio. If left undefined, you get random sounds.
 
-### Dialogue
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Dialogue
 Use quotation marks. Attribute to described character.
 
 **Colon syntax prevents subtitles:** `The founder says: "This cuts setup time in half."`
@@ -148,32 +180,42 @@ Use quotation marks. Attribute to described character.
 
 **Keep to one breath.** Clips are ~8 seconds. Long lines get rushed or cut off.
 
-### SFX
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# SFX
 ```
 SFX: Thunder cracks in the distance
 SFX: Footsteps crunching on frost, steady breaths in cold air
 ```
 
-### Ambient
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Ambient
 ```
 Ambient: The quiet hum of a starship bridge with occasional electronic beeps
 Ambient: Waves crashing, distant seagulls, gentle wind
 ```
 
-### Music
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Music
 ```
 Slow-building thriller score with low strings and subtle pulses
 Upbeat acoustic guitar with light percussion, optimistic morning energy
 ```
 
-### Layered Example
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Layered Example
 ```
 Neon buzzes softly. Static crackles from unseen speakers. A low electrical hum pulses beneath the rain.
 ```
 
 ---
 
-## Style & Aesthetic Keywords
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Style & Aesthetic Keywords
 
 **Visual formats:** Photorealistic, Film noir, Documentary, Cartoon, Claymation, Anime, Watercolor, Graphic novel, Art Deco, VHS aesthetic, Cyberpunk
 
@@ -187,7 +229,9 @@ Neon buzzes softly. Static crackles from unseen speakers. A low electrical hum p
 
 ---
 
-## Timestamp Prompting
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Timestamp Prompting
 
 Direct multi-beat sequences in a single generation:
 
@@ -200,9 +244,13 @@ Direct multi-beat sequences in a single generation:
 
 ---
 
-## Advanced Workflows
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
 
-### Ingredients to Video (Character + Set Consistency)
+# Advanced Workflows
+
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Ingredients to Video (Character + Set Consistency)
 
 Provide reference images of character, object, or style. The model maintains consistency across shots. Now includes audio generation.
 
@@ -236,7 +284,9 @@ create a shot focusing on the woman. A slight, mysterious smile plays on her lip
 as she replies: 'You were highly recommended.'"
 ```
 
-### First & Last Frame (Controlled Transitions)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# First & Last Frame (Controlled Transitions)
 
 Generate a natural video transition between two provided images, complete with audio. Use for:
 - Camera arcs/rotations around a subject
@@ -267,7 +317,9 @@ of the singer and circling around her to seamlessly end on the POV shot from beh
 The singer sings: 'when you look me in the eyes, I can see a million stars.'"
 ```
 
-### Clip Chaining (Seamless Scene Continuity)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Clip Chaining (Seamless Scene Continuity)
 
 **This is the key technique for visual continuity across clips.** Each clip shares a connected frame with the next.
 
@@ -281,11 +333,15 @@ The singer sings: 'when you look me in the eyes, I can see a million stars.'"
 **Result:** Camera position, lighting, props, and character identity stay consistent because each clip literally starts where the previous one ended.
 
 ```bash
+> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
 # Extract last frame from a clip
 ffmpeg -sseof -0.1 -i clip_01.mp4 -frames:v 1 -q:v 2 clip_01_lastframe.jpg
 
+> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
 # Use as first frame for next clip
-python scripts/generate_video.py \
+python scripts/generate_video_veo.py \
     --image clip_01_lastframe.jpg \
     --prompt "Continue the motion. Camera slowly pushes in..." \
     --output clip_02.mp4
@@ -293,7 +349,9 @@ python scripts/generate_video.py \
 
 **Why this matters:** Without clip chaining, each clip is generated independently -- the AI reinvents the room layout, prop positions, and lighting every time. With chaining, the visual state carries forward.
 
-### Video Extension (up to 148s)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Video Extension (up to 148s)
 
 Extend shots without breaking continuity. Keep camera angle, lighting, and subject position unchanged.
 
@@ -318,7 +376,9 @@ In the final [2-3] seconds, [resolution: settle, fade, hold].
 
 **Constraints:** 720p only. Max total duration 148s. Full model only (not lite).
 
-### Image-to-Video Prompting (IMPORTANT)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Image-to-Video Prompting (IMPORTANT)
 
 When using a storyboard still as the first frame, the image already defines subject, setting, composition, and style. **Do NOT redescribe what's visible in the image.**
 
@@ -343,7 +403,9 @@ Ambient: Ticking gradually slowing, low ethereal resonance building.
 
 ---
 
-## Anti-AI Texture Techniques
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Anti-AI Texture Techniques
 
 Specify micro-details and material cues to prevent the "AI plastic" look:
 
@@ -363,7 +425,9 @@ Reference film stocks for natural texture:
 
 ---
 
-## Action & Physics
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Action & Physics
 
 Use **force-based verbs** for realistic motion: push, pull, strike, slam, sway, ripple, spiral, drift, flutter.
 
@@ -376,7 +440,9 @@ Describe motion as choreography:
 
 ---
 
-## Cinematic Editing Terms Veo Understands
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Cinematic Editing Terms Veo Understands
 
 | Term | What it does |
 |------|-------------|
@@ -388,7 +454,9 @@ Describe motion as choreography:
 
 ---
 
-## Common Mistakes
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Common Mistakes
 
 | Mistake | Fix |
 |---------|-----|
@@ -409,7 +477,9 @@ Describe motion as choreography:
 
 ---
 
-## Prompt Length Guide
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Prompt Length Guide
 
 | Length | Words | Best For |
 |--------|-------|----------|
@@ -420,7 +490,9 @@ Describe motion as choreography:
 
 ---
 
-## Modular Prompt Format (for complex scenes)
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Modular Prompt Format (for complex scenes)
 
 ```
 Camera: [Shot type, angle, movement]
@@ -433,22 +505,40 @@ Audio: [Dialogue with colon syntax, SFX:, Ambient:, music direction]
 
 ---
 
-## Config Parameters
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Config Parameters
 
 ```python
 types.GenerateVideosConfig(
-    person_generation="allow_adult",   # "dont_allow" | "allow_adult" | "allow_all"
-    aspect_ratio="16:9",               # "16:9" | "9:16"
+    person_generation="allow_adult",   > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# "dont_allow" | "allow_adult" | "allow_all"
+    aspect_ratio="16:9",               > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# "16:9" | "9:16"
     number_of_videos=1,
-    duration_seconds=8,                # 4 | 5 | 6 | 8
-    resolution="720p",                 # "720p" | "1080p" | "4k"
-    generate_audio=True,               # Vertex AI only. AI Studio always generates audio
-    seed=42,                           # Improves consistency across regenerations
-    negative_prompt="wall, frame",     # Describe unwanted elements as nouns/adjectives
+    duration_seconds=8,                > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# 4 | 5 | 6 | 8
+    resolution="720p",                 > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# "720p" | "1080p" | "4k"
+    generate_audio=True,               > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Vertex AI only. AI Studio always generates audio
+    seed=42,                           > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Improves consistency across regenerations
+    negative_prompt="wall, frame",     > **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Describe unwanted elements as nouns/adjectives
 )
 ```
 
-### Cost Optimization
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Cost Optimization
 - Disable audio when adding custom soundtrack: 50% savings (Standard), 33% (Fast) -- Vertex AI only
 - Start at 720p for iteration, upgrade for final
 - Use veo-3.1-lite for drafts, full model for production
@@ -456,9 +546,13 @@ types.GenerateVideosConfig(
 
 ---
 
-## Example Prompts (from Google's guide)
+#> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
 
-### Office Worker (all 5 elements)
+# Example Prompts (from Google's guide)
+
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Office Worker (all 5 elements)
 ```
 Medium shot, a tired corporate worker, rubbing his temples in exhaustion,
 in front of a bulky 1980s computer in a cluttered office late at night.
@@ -466,14 +560,18 @@ Lit by harsh fluorescent overhead lights and the green glow of the monochrome mo
 Retro aesthetic, shot as if on 1980s color film, slightly grainy.
 ```
 
-### Crane Shot (reveal)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Crane Shot (reveal)
 ```
 Crane shot starting low on a lone hiker and ascending high above,
 revealing they are standing on the edge of a colossal, mist-filled canyon at sunrise.
 Epic fantasy style, awe-inspiring, soft morning light.
 ```
 
-### Bus Window (mood + material cues)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Bus Window (mood + material cues)
 ```
 Close-up with very shallow depth of field, a young woman's face,
 looking out a bus window at the passing city lights with her reflection
@@ -482,7 +580,9 @@ Melancholic mood with cool blue tones, moody, cinematic.
 Fine skin pores, subtle contrast, no gloss.
 ```
 
-### Timestamp Prompting (multi-beat in single clip)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Timestamp Prompting (multi-beat in single clip)
 ```
 [00:00-00:02] Medium shot from behind explorer pushing aside jungle vine.
 [00:02-00:04] Reverse shot of her freckled face, awe-struck.
@@ -492,7 +592,9 @@ Fine skin pores, subtle contrast, no gloss.
     SFX: Swelling, gentle orchestral score.
 ```
 
-### Product Reveal (timestamp + pacing)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Product Reveal (timestamp + pacing)
 ```
 Create a single continuous 8-second cinematic product reveal for a premium wireless headphone.
 0-3 seconds: Dark minimalist studio, headphone in soft silhouette on matte surface.
@@ -503,7 +605,9 @@ Create a single continuous 8-second cinematic product reveal for a premium wirel
     Premium finish, polished lighting.
 ```
 
-### Video Extension
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Video Extension
 ```
 Extend the clip by 7 seconds from the final frame.
 Keep camera angle, lighting, and headphone position unchanged.
@@ -512,7 +616,9 @@ In the final 3 seconds, let motion settle and fade in minimal text: "Premium Sou
 End on a steady hold with no cuts or new elements.
 ```
 
-### Film Noir Dialogue (ingredients + colon syntax)
+##> **2026-09: Veo 3.1 is now the FALLBACK.** Default Google video model is Gemini Omni 1.1 Flash — see `omni.md` and `scripts/generate_video_omni.py`. This script is `scripts/generate_video_veo.py`.
+
+# Film Noir Dialogue (ingredients + colon syntax)
 ```
 Using the provided images for the detective, the woman, and the office setting,
 create a medium shot of the detective behind his desk. He looks up at the woman

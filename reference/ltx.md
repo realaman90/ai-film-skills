@@ -1,5 +1,14 @@
 # LTX 2.3 Video Generation (direct API)
 
+> **2026-09 update — LTX-2.5 is live** (`ltx-2-5-fast`, `ltx-2-5-pro`, released 2026-08-11). `scripts/generate_video_ltx.py --ltx-model ltx-2-5-fast`.
+>
+> - Endpoints: text-to-video, image-to-video, audio-to-video, `last_frame_uri`, `camera_motion`, `generate_audio:false`. **No extend / retake / reframe on 2.5** — the script falls back to `ltx-2-3-pro` for those.
+> - `ltx-2-5-fast`: 720p/1080p **6–20 s** (24/25 fps) or 6–10 s at 48/50 fps; 1440p/4K 6–10 s. `ltx-2-5-pro`: 720p/1080p, 6–10 s only.
+> - `"duration": null` lets the model pick the length (credits reserved for the max, refunded).
+> - Pricing per second: ~$0.09 (720p) / $0.15 (1080p) / $0.19 (2K) / $0.37 (4K).
+> - `ltx-2-fast` / `ltx-2-pro` were **retired 2026-08-15** and removed from the script. LTX-2.3 stays the workhorse for extend/retake and 2–20 s clips.
+
+
 Lightricks LTX — fast, affordable video generation with synchronized audio. All calls go directly to `https://api.ltx.video/v1` using the LTX-issued API key.
 
 **Requires:** `LTXV_API_KEY` in environment. No third-party SDK — the script uses `urllib` directly.

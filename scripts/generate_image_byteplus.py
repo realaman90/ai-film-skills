@@ -54,7 +54,7 @@ WHY THIS EXISTS (vs generate_image.py which uses Nano Banana 2):
 
 Requires:
     ARK_API_KEY in environment (BytePlus Ark)
-    R2_* env vars if passing local image files to --ref (auto-uploaded to R2)
+    S3_BUCKET (+S3_REGION) if passing local image files to --ref (auto-uploaded to S3; see media_host.py)
 """
 import os, sys, argparse, json, urllib.request, urllib.error
 
@@ -63,50 +63,24 @@ ARK_BASE = "https://ark.ap-southeast.bytepluses.com/api/v3"
 DEFAULT_MODEL = "seedream-5-0-260128"
 
 
-def upload_to_r2(local_path, prefix="seedream"):
-    """Upload a local file to R2 and return the public URL (required for --ref)."""
-    try:
-        import boto3
-        account = os.environ.get("R2_ACCOUNT")
-        access = os.environ.get("R2_ACCESS_KEY")
-        secret = os.environ.get("R2_SECRET_KEY")
-        bucket = os.environ.get("R2_BUCKET")
-        public_url = os.environ.get("R2_PUBLIC_URL")
-        if not all([account, access, secret, bucket, public_url]):
-            return None
-        s3 = boto3.client(
-            "s3",
-            endpoint_url=f"https://{account}.r2.cloudflarestorage.com",
-            aws_access_key_id=access,
-            aws_secret_access_key=secret,
-            region_name="auto",  # Cloudflare R2 requires auto/wnam/enam/weur/eeur/apac/oc
-        )
-        basename = os.path.basename(local_path)
-        key = f"{prefix}/{basename}"
-        ext = os.path.splitext(local_path)[1].lower()
-        content_types = {
-            ".png": "image/png", ".jpg": "image/jpeg", ".jpeg": "image/jpeg",
-            ".webp": "image/webp",
-        }
-        content_type = content_types.get(ext, "application/octet-stream")
-        s3.upload_file(local_path, bucket, key, ExtraArgs={"ContentType": content_type})
-        return f"{public_url}/{key}"
-    except Exception as e:
-        print(f"R2 upload failed: {e}")
-        return None
+def upload_to_host(local_path, prefix="seedream"):
+    """Upload a local file to the configured host (S3 default, R2 legacy); returns a fetchable URL."""
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from media_host import upload_public
+    return upload_public(local_path, prefix)
 
 
 def resolve_ref(ref):
-    """Accept either a URL or a local file. Local files auto-upload to R2."""
+    """Accept either a URL or a local file. Local files auto-upload to S3."""
     if ref.startswith(("http://", "https://")):
         return ref
     if not os.path.exists(ref):
         print(f"ERROR: Reference file not found: {ref}")
         sys.exit(1)
-    print(f"Uploading {ref} to R2...")
-    url = upload_to_r2(ref)
+    print(f"Uploading {ref} to S3...")
+    url = upload_to_host(ref)
     if not url:
-        print(f"ERROR: R2 upload failed. Use a URL directly, or set R2_* env vars.")
+        print(f"ERROR: upload failed. Use a URL directly, or set S3_BUCKET (+S3_REGION).")
         sys.exit(1)
     print(f"  -> {url}")
     return url

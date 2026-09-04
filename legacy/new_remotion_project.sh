@@ -5,7 +5,7 @@ set -e
 
 TARGET="${1:?target dir required (e.g. /tmp/my-film)}"
 SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-TEMPLATE_DIR="$SKILL_DIR/remotion-template"
+TEMPLATE_DIR="$SKILL_DIR/legacy/remotion-template"
 
 if [ ! -d "$TEMPLATE_DIR" ]; then
   echo "Template not found at $TEMPLATE_DIR" >&2

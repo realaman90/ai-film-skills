@@ -1,4 +1,5 @@
-"""Generate a single image using Nano Banana 2 (Gemini image generation).
+"""(FALLBACK — the default still model is now GPT Image 2: scripts/generate_image_gpt.py)
+Generate a single image using Nano Banana 2 (Gemini image generation).
 
 Usage:
     # Text-to-image
@@ -26,7 +27,9 @@ def main():
     parser.add_argument("--edit", default=None, help="Source image to edit (inpainting/modification)")
     parser.add_argument("--aspect", default="16:9", help="Aspect ratio (default: 16:9)")
     parser.add_argument("--size", default=None, help="Image size: 512, 1K, 2K, 4K")
-    parser.add_argument("--model", default="gemini-3.1-flash-image-preview", help="Model ID")
+    parser.add_argument("--model", default="nb2",
+                        help="nb2 = gemini-3.1-flash-image (Nano Banana 2, default) | pro = gemini-3-pro-image (Nano Banana Pro: best "
+                             "typography/likeness, slower) | lite = gemini-3.1-flash-lite-image (cheap drafts) | or any raw model id")
     parser.add_argument("--retries", type=int, default=3, help="Max retry attempts")
     parser.add_argument("--skip-existing", action="store_true", help="Skip if output already exists")
     args = parser.parse_args()
@@ -41,10 +44,21 @@ def main():
 
     client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
 
+    MODEL_ALIASES = {
+        "nb2": "gemini-3.1-flash-image",
+        "pro": "gemini-3-pro-image",
+        "lite": "gemini-3.1-flash-lite-image",
+    }
+    args.model = MODEL_ALIASES.get(args.model, args.model)
+
     # Build config
     image_config_kwargs = {"aspect_ratio": args.aspect}
     if args.size:
-        image_config_kwargs["image_size"] = args.size
+        if "image_size" in getattr(types.ImageConfig, "model_fields", {}):
+            image_config_kwargs["image_size"] = args.size
+        else:
+            print(f"NOTE: installed google-genai has no ImageConfig.image_size; ignoring --size {args.size} "
+                  "(default output ~1376x768 for 16:9 is fine for video first frames)")
 
     config = types.GenerateContentConfig(
         response_modalities=["TEXT", "IMAGE"],

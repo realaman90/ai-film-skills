@@ -716,3 +716,19 @@ prompts live in the project (`refs/timeline_v1_jury.json`, `refs/timeline_v2_jur
   detector for caption timing; use OpenAI whisper-1 (API) only for the words. Local whisper-small mangles Hindi.
 - **HyperFrames lint:** a caption starting exactly at the fade-in end (1.0 s) trips `gsap_exit_missing_hard_kill`; overlapping caption
   windows trip `content_overlap`. Offset the first caption and clamp caption ends to the next start.
+
+## 2026-09-06 — BFL's camera-terms cheat sheet folded into the FLUX 3 docs
+
+- Source: docs.bfl.ml `prompting_video_camera_terms` — 14 categories, 119 terms, each with a demo clip. Now `reference/flux3-camera.md`
+  (term · what it reads as · studio phrase), linked from `flux3.md`, `SKILL.md` and the README.
+- **Pattern in every official example:** term first (*Dutch angle of…*), one visible action, one or two atmosphere details, then the frame
+  spec as prose ("10 seconds, 16:9"). Official cap: one framing term + one movement term + one action; four stacked terms is their own
+  bad example. Camera language is optional to them — for us it is an unnamed layer, so we name it.
+- **Transitions are nouns, not just `HARD CUT.`:** match cut, whip transition, foreground wipe, object portal, pass-through, jump cut,
+  quick cuts (eight shots in 10 s — a montage register), screen-in-screen. The Lumina foreground-wipe technique is official vocabulary now.
+- **New tools for product films:** Lazy Susan (turntable, camera fixed), probe lens (snorkel through a still life), locked-on, pedestal,
+  cinemagraph (a still with one motion), freeze frame with a moving camera, boomerang loop.
+- Director/era names are sanctioned as looks in the official prompts (Wes Anderson tableau, Wong Kar-wai step printing, Busby Berkeley
+  kaleidoscope, 90s camcorder 4:3). Kinetic typography is a documented capability — brand type still goes through HyperFrames.
+- Nothing here has been run yet; the first live tests should be the quick-cuts montage (count the cuts with `select='gt(scene,0.3)'`) and a
+  Lazy Susan packshot.

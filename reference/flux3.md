@@ -82,9 +82,12 @@ Start short to explore, lengthen to lock. "Name the format, not just the subject
 Name the move relative to the subject and what the frame looks like after it: "camera locked at eye level" · "pushes slowly forward from wide to
 close over 6 seconds" · "pulls slowly back, revealing the room" · "pans slowly right across the shelves" · "orbits clockwise at chest height" ·
 "wide handheld tracking shot alongside". Add lens character: 35 mm shallow (documentary) · 70 mm long lens (portrait compression) · 24 mm close
-(subjective handheld) · anamorphic 2.35:1 with flare (feature). One move per shot; stacking camera terms muddies it. Full vocabulary (shot sizes,
-angles, moves, focus, lenses, shutter/time, lighting, transitions, rigs, VFX, art direction) in the official camera-terms page — use its nouns verbatim
-(*dolly zoom*, *rack focus*, *whip pan*, *speed ramp*, *foreground wipe*, *object portal*, *halation*, *cinemagraph*, *split diopter*).
+(subjective handheld) · anamorphic 2.35:1 with flare (feature). One move per shot; stacking camera terms muddies it.
+**Vocabulary: [flux3-camera.md](flux3-camera.md)** — BFL's cheat sheet (14 categories, 119 terms) with studio phrasing, folded in 2026-09-06.
+The rules it adds: lead with the term (*Dutch angle of…*, *Rack focus from … to …*); **one framing term + one movement term** per shot, at most one
+lens/optic or time treatment on top (the official unreadable example stacks four); use the nouns verbatim (*dolly zoom*, *whip pan*, *Lazy Susan*,
+*probe lens*, *speed ramp*, *foreground wipe*, *object portal*, *halation*, *cinemagraph*, *split diopter*); write the frame spec in prose
+("10 seconds, 16:9") when the flags are `auto`, and keep prose and flags consistent when they are not.
 
 ### Image-to-video and keyframes
 - Open with **"Use this image as the first frame."** (or "…as the last frame") so the still is a hard anchor, not a style reference.
@@ -102,6 +105,11 @@ angles, moves, focus, lenses, shutter/time, lighting, transitions, rigs, VFX, ar
 Cut on resolved motion, not mid-gesture. Name the music bed **once** (top or tail) and ambience per shot if the mix should change. Pacing: even =
 calm, accelerating = urgent, held-then-cut = release. Fewer cuts land more reliably — reach for two before three. "SHOT ONE was doing X, then Y,
 then Z" is one shot with three beats, not three shots. Same locked frame with light cues across cuts = time compression ("a day in four cuts").
+**Named transitions:** `HARD CUT.` is the default, not the only cut — *match cut* (shape/motion carries over), *whip transition*, *foreground
+wipe* (a passing object clears onto the next scene), *object portal* (dive into a cup, out into a forest), *pass-through* (one move threads
+several spaces) and *jump cut* are official nouns; write the transition where the cut should be motivated ("MATCH CUT on the rotation into SHOT
+TWO"). A second register exists for montage: *"quick cuts … eight snappy shots"* over one percussive bed (official demo, 10 s) — no dialogue,
+music named once; not yet run by us. Full list and phrasing: [flux3-camera.md](flux3-camera.md#shot-transitions-inside-one-generation).
 
 ### Audio — four layers, each named
 Verified against the official audio guide (docs.bfl.ml `prompting_video_audio`) 2026-09-06. Rules are marked **[official]** (BFL docs) or
@@ -270,7 +278,7 @@ Prompt changes need a new draft. The sidecar stores `draft_cache_file` (the `.bi
 
 ### What to avoid
 keyword dumps · rewriting the whole prompt when one layer missed · duration < 5 or > 20 (v2v > 15) · stills that don't match the output aspect ·
-unnamed camera (drift) or unnamed audio (invented layers) · quoted dialogue without a visible speaker *or* a `voiceover` cue, or without "no on-screen
+unnamed camera (drift) or unnamed audio (invented layers) · three or more camera terms in one phrase (*low aerial handheld orbit push-in*) · quoted dialogue without a visible speaker *or* a `voiceover` cue, or without "no on-screen
 text, no subtitles" · re-rolling a take whose voice you liked instead of enhancing its draft · stacked personality adjectives as voice direction ·
 abstract audio ("a held breath", "subsonic dread") — least supported · overfilled short clips (dialogue clips at the end) · two mid-shots in a row
 across a HARD CUT · describing the still instead of the motion · mid-gesture endings on clips you plan to continue.
@@ -326,6 +334,9 @@ a 30 s product one-take with a motion reference → Seedance 2.5; coverage at sc
 ## Verification log
 
 2026-09-06 — audio/speech section verified against docs.bfl.ml prompting_video_audio (+ overview / t2v / i2v / camera terms); voice-consistency subsection added.
+
+2026-09-06 — camera vocabulary folded in from docs.bfl.ml `prompting_video_camera_terms` (14 categories, 119 terms) → [flux3-camera.md](flux3-camera.md);
+Camera, Multi-shot and What-to-avoid sections updated. Vocabulary only — none of the new terms has been run live yet.
 
 **2026-09-06 — live, four generations, ≈ $4.80 (BFL_API_KEY in `~/config.env`, 5000 credits ≈ $50 on the account).**
 

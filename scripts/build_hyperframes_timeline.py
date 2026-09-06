@@ -41,7 +41,7 @@ import sys
 from html import escape
 
 ASPECTS = {"16:9": (1920, 1080), "9:16": (1080, 1920), "1:1": (1080, 1080), "21:9": (2560, 1080)}
-TRANSITIONS = ("cut", "crossfade", "blur", "dip")
+TRANSITIONS = ("cut", "crossfade", "blur", "dip", "whip")
 
 
 # ---------------------------------------------------------------- parsing helpers
@@ -205,11 +205,14 @@ def build_html(spec):
     if not scenes:
         raise ValueError("no scenes")
 
-    # --- timing: sequential, each scene overlaps the previous by tdur (except first)
+    # --- timing: sequential, each scene overlaps the previous by its transition's duration (except first).
+    # Per-scene override: "transitionIn": cut|crossfade|blur|dip|whip and "transitionDuration" on the INCOMING scene.
     t = 0.0
     for i, s in enumerate(scenes):
         s["id"] = f"scene-{i + 1:02d}"
-        s["start"] = 0.0 if i == 0 else max(0.0, t - tdur)
+        s["_tin"] = (s.get("transitionIn") or transition) if i > 0 else "cut"
+        s["_tdur"] = 0.0 if s["_tin"] == "cut" else float(s.get("transitionDuration", spec.get("transitionDuration", 0.5)) or 0.5)
+        s["start"] = 0.0 if i == 0 else max(0.0, t - s["_tdur"])
         s["end"] = s["start"] + float(s["duration"])
         t = s["end"]
     total = t
@@ -238,7 +241,7 @@ def build_html(spec):
       .title-card .cta {{ margin-top: {int(base_font * 0.9)}px; font-size: {base_font * 0.95:.0f}px; font-weight: 500; opacity: 0.9;
                          padding: {int(base_font * 0.35)}px {int(base_font * 0.9)}px; border: 2px solid rgba(255,255,255,0.6); border-radius: 999px; }}
       .title-card .sub {{ margin-top: {int(base_font * 0.5)}px; font-size: {base_font * 0.9:.0f}px; font-weight: 400; opacity: 0.8; }}
-      .subtitle {{ position: absolute; left: 0; right: 0; bottom: {int(height * (0.10 if portrait else 0.07))}px; display: flex; justify-content: center; pointer-events: none; }}
+      .subtitle {{ position: absolute; inset: auto 0 {int(height * (0.10 if portrait else 0.07))}px 0; height: auto; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; }}
       .subtitle span {{ font-size: {sub_font:.0f}px; line-height: 1.3; color: rgba(255,255,255,0.96); background: rgba(0,0,0,0.55);
                        padding: {int(sub_font * 0.3)}px {int(sub_font * 0.8)}px; border-radius: 8px; max-width: 82%; text-align: center; }}
       .logo-wrap {{ pointer-events: none; }}
@@ -309,8 +312,11 @@ def build_html(spec):
             tl.append(f'tl.fromTo("#{oid}-line", {{ autoAlpha: 0, y: 30 }}, {{ autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }}, {fmt(st + 0.3)});')
 
         # transition IN (incoming scene animates over the overlap; outgoing stays untouched underneath)
-        if i > 0 and tdur > 0:
+        tin, tdur_s = s.get("_tin", transition), s.get("_tdur", tdur)
+        if i > 0 and tdur_s > 0:
             T = fmt(st)
+            tdur = tdur_s
+            transition = tin
             if transition == "crossfade":
                 tl.append(f'tl.fromTo("#{sid}", {{ opacity: 0 }}, {{ opacity: 1, duration: {fmt(tdur)}, ease: "power2.inOut" }}, {T});')
             elif transition == "blur":
@@ -321,6 +327,11 @@ def build_html(spec):
                 half = tdur / 2
                 tl.append(f'tl.to("#{prev}", {{ opacity: 0, duration: {fmt(half)}, ease: "power2.in" }}, {T});')
                 tl.append(f'tl.fromTo("#{sid}", {{ opacity: 0 }}, {{ opacity: 1, duration: {fmt(half)}, ease: "power2.out" }}, {fmt(st + half)});')
+            elif transition == "whip":
+                # whip pan: outgoing slides+blurs out left, incoming slides+blurs in from the right, over the overlap
+                prev = scenes[i - 1]["id"]
+                tl.append(f'tl.to("#{prev}", {{ xPercent: -60, filter: "blur(18px)", duration: {fmt(tdur)}, ease: "power3.in" }}, {T});')
+                tl.append(f'tl.fromTo("#{sid}", {{ xPercent: 60, filter: "blur(18px)" }}, {{ xPercent: 0, filter: "blur(0px)", duration: {fmt(tdur)}, ease: "power3.out" }}, {T});')
 
     # --- subtitles (one timed clip per cue; offset by voiceover start)
     subs = spec.get("subtitles") or []
@@ -505,6 +516,9 @@ def main():
         print(f"error: {e}", file=sys.stderr)
         return 2
     spec.pop("_projectDir", None)
+    for sc in spec["scenes"]:
+        for k in ("_tin", "_tdur", "id", "start", "end"):
+            sc.pop(k, None)
 
     if args.dry_run:
         print(html)

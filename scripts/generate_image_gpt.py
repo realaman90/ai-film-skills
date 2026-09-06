@@ -103,6 +103,7 @@ def main():
             if mode == "edit":
                 handles = [open(pth, "rb") for pth in images]
                 kwargs = dict(common, image=handles if len(handles) > 1 else handles[0])
+                kwargs.pop("moderation", None)  # images.edit() does not accept moderation
                 if args.mask:
                     handles.append(open(args.mask, "rb"))
                     kwargs["mask"] = handles[-1]

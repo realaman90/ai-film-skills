@@ -1,0 +1,321 @@
+<title>Knowing the Customer Shoot</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#f4f2ee; --paper-2:#ebe8e2; --ink:#141f29; --ink-2:#4a525c; --ink-3:#7d858e; --rule:#d9d5cd;
+  --blue:#056df5; --blue-soft:#dfe9fb; --green:#2e9e6b; --green-soft:#e2f2ea; --amber:#b8860b; --amber-soft:#f6ecd0;
+  --card:#ffffff; --shadow:0 1px 2px rgba(20,31,41,.06), 0 12px 32px rgba(20,31,41,.06);
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#0f151c; --paper-2:#161e27; --ink:#eef1f4; --ink-2:#b6bec7; --ink-3:#7f8994; --rule:#2a343f;
+  --blue:#4f95ff; --blue-soft:#12325e; --green:#4cc08a; --green-soft:#153b2b; --amber:#d9a53a; --amber-soft:#3b3116;
+  --card:#141c25; --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+}}
+:root[data-theme="dark"]{
+  --paper:#0f151c; --paper-2:#161e27; --ink:#eef1f4; --ink-2:#b6bec7; --ink-3:#7f8994; --rule:#2a343f;
+  --blue:#4f95ff; --blue-soft:#12325e; --green:#4cc08a; --green-soft:#153b2b; --amber:#d9a53a; --amber-soft:#3b3116;
+  --card:#141c25; --shadow:0 1px 2px rgba(0,0,0,.4), 0 12px 32px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:16px/1.55 "Familjen Grotesk",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:1040px;margin:0 auto;padding:56px 32px 96px}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3)}
+h1{font-size:44px;line-height:1.05;letter-spacing:-.02em;font-weight:700;margin:10px 0 14px;text-wrap:balance}
+h2{font-size:26px;line-height:1.15;letter-spacing:-.015em;font-weight:700;margin:0 0 6px;text-wrap:balance}
+h3{font-size:18px;font-weight:600;margin:0 0 6px}
+p{max-width:68ch;margin:0 0 12px;color:var(--ink-2)}
+p strong,li strong{color:var(--ink)}
+.lede{font-size:19px;color:var(--ink-2);max-width:62ch}
+header{border-bottom:1px solid var(--rule);padding-bottom:28px;margin-bottom:40px}
+.meta{display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:18px}
+.meta div{font-size:14px;color:var(--ink-2)} .meta b{display:block;color:var(--ink);font-weight:600}
+section{margin:0 0 52px}
+.sec-head{display:grid;grid-template-columns:1fr;gap:4px;margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media (max-width:760px){.grid2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--rule);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow)}
+.card.rec{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-soft),var(--shadow)}
+.card h3{display:flex;align-items:center;gap:10px}
+.pill{display:inline-block;padding:4px 10px;border-radius:999px;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.pill.blue{background:var(--blue-soft);color:var(--blue)} .pill.green{background:var(--green-soft);color:var(--green)} .pill.amber{background:var(--amber-soft);color:var(--amber)} .pill.ink{background:var(--paper-2);color:var(--ink-2)}
+ul{margin:0 0 12px;padding-left:20px;color:var(--ink-2)} li{margin:4px 0} ul.tight li{margin:2px 0}
+.locked{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.locked div{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;font-size:14px;color:var(--ink-2)} .locked b{display:block;color:var(--ink);font-size:15px}
+/* timeline strip */
+.strip{position:relative;height:74px;margin:18px 0 8px;border-radius:8px;overflow:hidden;background:var(--paper-2);border:1px solid var(--rule)}
+.strip div{position:absolute;top:0;bottom:0;display:flex;align-items:flex-end;padding:6px 8px;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.06em;color:var(--ink);border-right:1px solid var(--paper)}
+.strip .re{background:var(--amber-soft)} .strip .sh{background:var(--blue-soft)} .strip .kp{background:transparent;color:var(--ink-3)}
+.strip .tick{position:absolute;top:0;font-size:10px;color:var(--ink-3);padding:4px 0 0 6px}
+.legend{display:flex;gap:18px;font-size:13px;color:var(--ink-2);margin-bottom:6px} .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:6px;border:1px solid var(--rule)}
+/* shot table */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);border-radius:14px;background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:900px;font-size:14.5px}
+th{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);text-align:left;padding:14px 14px 10px;border-bottom:1px solid var(--rule);background:var(--paper-2)}
+td{padding:14px;border-bottom:1px solid var(--rule);vertical-align:top;color:var(--ink-2)} tr:last-child td{border-bottom:0}
+td.tc{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink);font-size:13px}
+td.tc small{display:block;color:var(--ink-3);font-size:11px;margin-top:2px}
+td .era{font-weight:700;color:var(--ink);display:block;font-size:15px}
+td .vo{font-style:italic;color:var(--ink);display:block;margin-bottom:6px}
+td .kw{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--blue);display:block;margin-top:6px}
+td ul{padding-left:16px;margin:0} td li{margin:2px 0}
+.frame{display:grid;grid-template-columns:260px 1fr;gap:22px;align-items:start}
+@media (max-width:760px){.frame{grid-template-columns:1fr}}
+.module{position:relative;width:260px;aspect-ratio:16/9;background:var(--ink);border-radius:8px;overflow:hidden}
+.module .m{position:absolute;left:12.5%;top:8.9%;width:75%;height:62.8%;border:2px solid var(--blue);border-radius:6px;background:rgba(5,109,245,.18)}
+.module .m span{position:absolute;left:8px;bottom:6px;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:10px;color:#fff;letter-spacing:.06em}
+.module .axis{position:absolute;left:0;right:0;top:80%;height:2px;background:var(--blue)}
+.module .kt{position:absolute;left:14%;top:66%;padding:2px 6px;background:#fff;color:#141f29;font-size:9px;font-weight:700;border-radius:3px}
+.spec{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.spec .card{padding:16px 18px} .spec h3{font-size:15px;margin-bottom:8px}
+.spec ul{font-size:14px}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{position:relative;padding:10px 0 10px 44px;border-bottom:1px solid var(--rule);color:var(--ink-2)} .steps li:last-child{border:0}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:10px;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--paper);font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:12px;font-weight:600;display:grid;place-items:center}
+code{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:13px;background:var(--paper-2);padding:2px 6px;border-radius:5px;color:var(--ink)}
+pre{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.5;background:var(--ink);color:#e8edf2;padding:14px 16px;border-radius:10px;overflow-x:auto;margin:10px 0 0}
+:root[data-theme="dark"] pre, :root:not([data-theme="light"]) pre{background:#0a0f14}
+.budget td:last-child,.budget th:last-child{text-align:right;font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace;font-variant-numeric:tabular-nums;white-space:nowrap}
+.budget table{min-width:0}
+.ask{background:var(--card);border-left:4px solid var(--blue);border-radius:0 12px 12px 0;padding:18px 22px;box-shadow:var(--shadow)}
+.ask ol{margin:8px 0 0;padding-left:20px;color:var(--ink-2)} .ask li{margin:6px 0}
+footer{border-top:1px solid var(--rule);margin-top:40px;padding-top:16px;font-size:13px;color:var(--ink-3)}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">KontentPlus · launch film · production plan · 4 Sep 2026</div>
+  <h1>Knowing the Customer: the real-footage plan</h1>
+  <p class="lede">Everything that is working in the current cut stays. We replace the generated era takes and the results scene with real footage, delivered to slot lengths the narration already fixes, so the film rebuilds without re-editing.</p>
+  <div class="meta">
+    <div><b>Runtime</b>49.7 s · 24 fps · 1920×1080</div>
+    <div><b>Slots to replace</b>7 clips · 6 era slots + results</div>
+    <div><b>Route</b>Generated: GPT Image 2 stills + Omni (shoot plan kept as fallback)</div>
+    <div><b>Current reference</b>film/renders/timeline_v14.mp4</div>
+  </div>
+</header>
+
+<div class="ask" style="margin-bottom:28px;border-left-color:var(--green)">
+    <div class="eyebrow">Route changed · 4 Sep, 23:40</div>
+    <h3>No shoot. All plates are now generated: GPT Image 2 stills animated with Omni.</h3>
+    <p>Aman's call: keep it generative. What changed since this plan was written: ten archival-style stills (real people, faces, era-correct film stock) were generated, animated at 720p with Omni, scored by Gemini for authenticity and motion, and the best takes installed into every era slot and the results scene. The slot timings, framing rules and swap-in procedure below still apply; the Stockholm shoot and archival licensing sections are kept only as the fallback if the generated route is ever abandoned.</p>
+    <ul class="tight">
+      <li>Takes live in <code>eras/real/</code> (stills, takes, <code>picks*.json</code>); the installed plates are in <code>film/assets/clips/</code>, previous ones in <code>_prev/</code>.</li>
+      <li>Current cut: <code>film/renders/timeline_v14.mp4</code>. Blind jury: about 6 to 7. The evaluator's remaining notes are structural (live-action ending after the interface, tonal jump at the turn), not footage detail.</li>
+      <li>What helped: full-motion takes with faces beat "hold-still" takes; the press + newsstand join in the long 1920s slot; the clean front-on 2010s take (rated 7).</li>
+    </ul>
+  </div>
+<section>
+  <div class="sec-head"><div class="eyebrow">Why</div><h2>The evaluator's last two complaints are both footage</h2></div>
+  <p>A blind Gemini jury puts the v12 cut at 6–7 on a scale where 8 is strong professional work. Every remaining note is about the plates: the generated era takes read as stock-like, and the one live-action cutaway "breaks the motion-first immersion". The timeline device, narration, product canvas and end card were called out as the strengths. So the brief is narrow: <strong>real pictures inside the frame that already works.</strong></p>
+  <div class="locked">
+    <div><b>Locked</b>Narration B (Chris), jazz bed, mix and every line timing</div>
+    <div><b>Locked</b>Timeline device: module, axis, decade ticks, pushes, kinetic cards</div>
+    <div><b>Locked</b>Product section: brain beat, operator canvas, edit screen, end card</div>
+    <div><b>Replace</b>Six era plates (0.0–22.0 s)</div>
+    <div><b>Replace</b>Results scene (39.1–43.0 s)</div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Timeline</div><h2>Slot lengths are fixed by the narration</h2></div>
+  <p>Each era push lands on its narration line, so a plate must cover its slot plus the 0.45 s crossfade on either side. Deliver at least the length shown; longer is fine, we choose the in-point.</p>
+  <div class="legend"><span><i style="background:var(--amber-soft)"></i>archival</span><span><i style="background:var(--blue-soft)"></i>shoot</span><span><i style="background:transparent"></i>keep</span></div>
+  <div class="strip">
+    <div class="re" style="left:0%;width:8.1%">1900s</div>
+    <div class="re" style="left:8.1%;width:13.1%">1920s</div>
+    <div class="re" style="left:21.2%;width:6.1%">1960s</div>
+    <div class="re" style="left:27.3%;width:6.3%">1990s</div>
+    <div class="sh" style="left:33.6%;width:10.6%">2010s A+B</div>
+    <div class="kp" style="left:44.2%;width:34.5%">turn · brain · operator · edit</div>
+    <div class="sh" style="left:78.7%;width:7.9%">results</div>
+    <div class="kp" style="left:86.6%;width:13.4%">end card</div>
+    <span class="tick" style="left:0">0 s</span><span class="tick" style="left:44.2%">22.0</span><span class="tick" style="left:78.7%">39.1</span><span class="tick" style="left:86.6%">43.0</span>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Framing</div><h2>What the module shows</h2></div>
+  <div class="frame">
+    <div class="module"><div class="m"><span>1440 × 678 · 2.12:1</span></div><div class="kt">+ reach</div><div class="axis"></div></div>
+    <div>
+      <p>Era plates are masked into a <strong>1440 × 678 window</strong> centred at x 240–1680, y 96–774 of the 1080p frame. A 16:9 source loses roughly 20 % top and bottom, so keep the action in the middle band and leave headroom. 4:3 archival is fine: we scale it to fill the width and crop the height, which is where the era look helps.</p>
+      <ul class="tight">
+        <li>Kinetic cards ride the lower-left of the module: keep that corner quiet.</li>
+        <li>Faces are welcome now. The generated takes avoided them; real footage should not.</li>
+        <li>Grade neutral. The film applies its own contrast, saturation and era tint in the composition.</li>
+        <li>Motion: slow and continuous. The push between eras adds its own movement.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Route</div><h2>Archival for the past, one shoot for now</h2></div>
+  <div class="grid2">
+    <div class="card rec">
+      <h3>Recommended <span class="pill blue">archival + shoot</span></h3>
+      <p>Real period footage is the most authentic thing we can put in the module and is exactly what the eras claim: "this is what marketing looked like". Four licensed clips for 1900s–1990s, then a half-day shoot in Stockholm for the 2010s desk and the results scene.</p>
+      <ul class="tight">
+        <li>Authenticity solves the "stock-like" note outright.</li>
+        <li>Roughly one week end to end, most of it search and licensing.</li>
+        <li>Budget in the low thousands of euros, detailed below.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>Alternative <span class="pill ink">period shoot</span></h3>
+      <p>Stage four eras with props and costume. Full control of action and framing, but a market stall, a letterpress shop, a 1960s boardroom and a mail room are four locations, four wardrobes and two or three shoot days.</p>
+      <ul class="tight">
+        <li>Only worth it if the film needs a recurring on-camera character across eras.</li>
+        <li>Three to four weeks, budget five to ten times the archival route.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Shot list · eras</div><h2>Six plates, one per narration line</h2></div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Slot</th><th>Era · line</th><th>Picture we need</th><th>Source</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tc">00:00.0–00:04.0<small>min 4.5 s</small></td>
+        <td><span class="era">1900s · Marketplace</span><span class="vo">"At the market, you knew them by face."</span><span class="kw">card: by face</span></td>
+        <td><ul><li>A merchant and a buyer at a stall or counter, close enough to read the exchange: goods handed over, a nod, coins.</li><li>Street market or general store, hand-cranked camera feel, people looking at each other.</li></ul></td>
+        <td><span class="pill amber">archival</span><ul><li>BFI · Mitchell &amp; Kenyon (Edwardian street life, 1900–1907)</li><li>Prelinger Archives (public domain)</li><li>Search: "1900s market street", "general store 1905", "Edwardian shopkeeper"</li></ul></td>
+      </tr>
+      <tr>
+        <td class="tc">00:03.6–00:10.6<small>min 7.5 s</small></td>
+        <td><span class="era">1920s · Print</span><span class="vo">"Print gave you reach — and took away the faces."</span><span class="kw">cards: + reach · − faces</span></td>
+        <td><ul><li>The long slot. Two actions in one clip or two clips we join: a newspaper press running, then papers in a crowd, a newsstand, readers who never look up.</li><li>The "faces" beat lands on the second half: backs of heads, rows of hats, a sea of newsprint.</li></ul></td>
+        <td><span class="pill amber">archival</span><ul><li>Fox Movietone / British Pathé · "newspaper press 1920s", "Fleet Street presses"</li><li>Prelinger · "printing plant 1920s"</li><li>Crowd: "commuters reading newspapers 1920s"</li></ul></td>
+      </tr>
+      <tr>
+        <td class="tc">00:10.1–00:13.5<small>min 4.0 s</small></td>
+        <td><span class="era">1960s · Agencies</span><span class="vo">"Agencies gave you a demographic and a guess."</span><span class="kw">cards: + a demographic · + a guess</span></td>
+        <td><ul><li>Ad men around a table or an easel chart, a storyboard pinned up, a projector throwing a commercial on a wall.</li><li>One clear gesture toward a chart sells "a guess".</li></ul></td>
+        <td><span class="pill amber">archival</span><ul><li>Getty / Pond5 · "advertising agency 1960s", "Madison Avenue newsreel"</li><li>Prelinger · industrial films on market research and TV advertising</li></ul></td>
+      </tr>
+      <tr>
+        <td class="tc">00:13.1–00:16.7<small>min 4.0 s</small></td>
+        <td><span class="era">1990s · Direct mail</span><span class="vo">"Direct mail gave you a zip code and a landfill."</span><span class="kw">cards: + a zip code · + a landfill</span></td>
+        <td><ul><li>Mail sorting: racks and bins overflowing with catalogues, a machine spitting envelopes, a home mailbox stuffed with flyers.</li><li>If a second clip is available, end on the bin or a landfill of paper.</li></ul></td>
+        <td><span class="pill amber">archival</span><ul><li>Getty / Pond5 · "mail sorting facility 1990s", "junk mail", "bulk mail"</li><li>Local option: PostNord archive footage (Swedish context)</li></ul></td>
+      </tr>
+      <tr>
+        <td class="tc">00:16.2–00:20.2<small>min 4.5 s</small></td>
+        <td><span class="era">2010s · Platforms A</span><span class="vo">"And the platforms? They gave you all the data in the world —"</span><span class="kw">cards: + all the data</span></td>
+        <td><ul><li>One marketer at a desk with three monitors of live dashboards, tabs and notification badges. Slow push-in over the shoulder.</li><li>Screens must show real, moving interfaces: analytics, an ad manager, a CRM, a social scheduler.</li></ul></td>
+        <td><span class="pill blue">shoot</span><ul><li>Stockholm office, contemporary and clean. Not oak, not old-school.</li><li>Screen content prepared by us as playback files.</li></ul></td>
+      </tr>
+      <tr>
+        <td class="tc">00:19.8–00:22.0<small>min 3.0 s</small></td>
+        <td><span class="era">2010s · Platforms B</span><span class="vo">"— and no time to use it."</span><span class="kw">card: − no time</span></td>
+        <td><ul><li>Second angle on the same setup: front-on, the face lit by the screens, a hand to the temple, then stillness. The cut to white flash lands at the end.</li></ul></td>
+        <td><span class="pill blue">shoot</span><ul><li>Same setup, same talent, second camera position.</li></ul></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Shot list · results</div><h2>The scene that should feel like a real Monday</h2></div>
+  <div class="tablewrap">
+  <table>
+    <thead><tr><th>Slot</th><th>Line</th><th>Picture we need</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="tc">00:39.1–00:43.0<small>min 4.5 s</small></td>
+        <td><span class="vo">"If you're a B2B company that would rather grow than juggle — let's talk."</span><span class="kw">card: Grow, don't juggle.</span></td>
+        <td><ul><li>A small meeting room, daylight. A marketing lead and a CEO or CMO glance at the wall display, then at each other. A relaxed exchange, no presenting.</li><li>The wall display plays the operator's results canvas: the leads chart, pipeline tiles and the proposal being approved. We deliver that as a loop.</li><li>Slow dolly or slider push toward the screen, about 8 % over the take.</li></ul></td>
+        <td><ul><li>Same location and day as the 2010s desk to keep it to one half-day.</li><li>Two talent, ideally the real team.</li><li>Also grab: two clean plates of the empty screen and 10 s of room tone.</li></ul></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Stockholm shoot</div><h2>One half-day, two setups</h2></div>
+  <div class="spec">
+    <div class="card"><h3>Camera</h3><ul class="tight"><li>Full-frame mirrorless, UHD 3840×2160, <strong>24 fps</strong>, 1/48 shutter</li><li>Log profile, 10-bit if available</li><li>35 mm and 50 mm primes, f/2–2.8</li><li>Slider or gimbal for the push-ins; no handheld shake</li></ul></div>
+    <div class="card"><h3>Light</h3><ul class="tight"><li>Window daylight as key, one soft fill opposite</li><li>Desk setup: let the monitors light the face for setup B</li><li>Practical desk lamp on for depth, no coloured gels</li></ul></div>
+    <div class="card"><h3>Screens</h3><ul class="tight"><li>Playback files supplied by us (dashboards for the desk, results loop for the wall)</li><li>Set displays to 60 Hz; check for flicker and moiré at the monitor</li><li>Wall display brightness one stop under the room</li></ul></div>
+    <div class="card"><h3>Talent &amp; wardrobe</h3><ul class="tight"><li>Desk: one marketer, 30s, plain knit or shirt</li><li>Results: marketing lead + CEO or CMO, contemporary, muted colours</li><li>No logos, no white shirts against the wall display</li></ul></div>
+    <div class="card"><h3>Takes</h3><ul class="tight"><li>Three takes per setup, 10–15 s each, action starts before the slate</li><li>Setup A over the shoulder, setup B front-on, results wide + one tighter alternate</li><li>Clean plates of every screen</li></ul></div>
+    <div class="card"><h3>Delivery</h3><ul class="tight"><li>ProRes 422 HQ or H.264 100 Mb/s, original resolution</li><li>Ungraded log plus a one-light reference grade</li><li>File names: <code>era2010_A_t1.mov</code>, <code>results_wide_t2.mov</code></li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Archival specs</div><h2>What to license</h2></div>
+  <div class="grid2">
+    <div class="card"><h3>Technical</h3><ul class="tight"><li>1080p or better; 2K scans of film are ideal</li><li>Any frame rate: we conform to 24 fps</li><li>4:3 accepted (it fills the module well); 16:9 also fine</li><li>Prefer clips with the original grain and slight damage over "restored and stabilised": the film tint is added by us</li><li>Minimum length per slot as in the shot list, ideally 10 s so we can choose the moment</li></ul></div>
+    <div class="card"><h3>Licence</h3><ul class="tight"><li>Web, social and events, worldwide, perpetual</li><li>Editorial-only clips are not enough for a launch film: it needs commercial use</li><li>Prelinger and other public-domain sources: no licence, but keep the source URL and a note in the project</li><li>Keep invoices and licence PDFs in <code>kontentplus-intro/refs/licences/</code></li></ul></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Budget &amp; timing</div><h2>Rough numbers, Stockholm rates</h2></div>
+  <div class="grid2">
+    <div class="tablewrap budget">
+      <table>
+        <thead><tr><th>Item</th><th>Estimate</th></tr></thead>
+        <tbody>
+          <tr><td>4 archival clips, commercial licence (Getty / Pond5 / Pathé mix)</td><td>€600–1,800</td></tr>
+          <tr><td>Half-day shoot: DoP with camera and slider, one assistant</td><td>€1,500–2,500</td></tr>
+          <tr><td>Location (own office or a rented meeting room)</td><td>€0–500</td></tr>
+          <tr><td>Talent (three people, own team or friends of the brand)</td><td>€0–900</td></tr>
+          <tr><td>Conform, grade in composition, 1080p finals</td><td>in-house</td></tr>
+          <tr><td><strong>Total</strong></td><td><strong>€2,100–5,700</strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card">
+      <h3>Week plan</h3>
+      <ol class="steps">
+        <li><strong>Days 1–3</strong> Archival search and licensing. I shortlist three candidates per era with in-points; you pick.</li>
+        <li><strong>Day 3</strong> Confirm location, talent and DoP. I prepare the screen playback files.</li>
+        <li><strong>Day 4 or 5</strong> Half-day shoot: desk setups A and B in the morning, results scene after lunch.</li>
+        <li><strong>Day 6</strong> Conform and swap-in, draft render, jury pass.</li>
+        <li><strong>Day 7</strong> 1080p finals and the cut-downs.</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head"><div class="eyebrow">Swap-in</div><h2>How a clip enters the cut</h2></div>
+  <p>The build reads plates by name from <code>film/assets/clips/</code>. A new plate only has to be conformed and dropped in under the existing name; the spec, overlays and music alignment rebuild from the narration timings.</p>
+  <ol class="steps">
+    <li>Conform to 1920×1080, 24 fps, constant frame rate. For 4:3 sources scale to width and centre-crop.</li>
+    <li>Save under the slot's name: <code>broll_merchant1900.mp4</code>, <code>ref_1926.mp4</code>, <code>broll_boardroom1960.mp4</code>, <code>broll_mailroom1990.mp4</code>, <code>broll_saasdesk2010.mp4</code>, <code>ref_2016b.mp4</code>, <code>scene_results.mp4</code>.</li>
+    <li>If the best moment is not at the head of the clip, set <code>mediaStart</code> for that slot in <code>make_spec_v13.py</code>.</li>
+    <li>Remove the per-era CSS grade that compensated for the generated takes (the 1990s sepia in <code>overlays_v13.py</code>); real footage carries its own look.</li>
+    <li>Run the chain and render a draft; the pushes stay on their lines because slot lengths come from the narration, not from the clips.</li>
+  </ol>
+  <pre>ffmpeg -i in.mov -vf "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080,fps=24" \
+  -c:v libx264 -crf 16 -pix_fmt yuv420p -an film/assets/clips/broll_boardroom1960.mp4
+cd film && MUSIC=bgmusic_jazz.mp3 python3 make_spec_v13.py && python3 align_music.py 21.99 49.73 \
+  && python3 make_spec_v13.py && build_hyperframes_timeline.py --project . --spec scenes_v13.json \
+  && python3 overlays_v13.py && npx hyperframes@0.8.27 check --no-contrast \
+  && render_hyperframes.sh . renders/timeline_v13.mp4 --quality draft</pre>
+</section>
+
+<section>
+  <div class="ask">
+    <div class="eyebrow">Decisions needed</div>
+    <h3>Four calls before I start the archival search</h3>
+    <ol>
+      <li><strong>Route:</strong> archival + one shoot (recommended), or a staged period shoot?</li>
+      <li><strong>Location:</strong> the KontentPlus office, or a rented meeting room with a wall display?</li>
+      <li><strong>Talent:</strong> real team on camera, or cast three people?</li>
+      <li><strong>Dates:</strong> which half-day next week works for the shoot?</li>
+    </ol>
+  </div>
+</section>
+
+<footer>Project: ~/Desktop/01_my_dev/kontentplus-intro · reference cut timeline_v12.mp4 · narration B, Chris · plan by the film pipeline, 4 September 2026</footer>
+</div>

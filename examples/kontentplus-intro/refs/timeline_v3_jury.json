@@ -1,0 +1,46 @@
+{
+  "scores": {
+    "story": 7,
+    "footage_quality": 6,
+    "editing_rhythm": 7,
+    "motion_design": 7,
+    "sound_and_vo": 7,
+    "product_clarity": 7,
+    "b2b_persuasion": 6,
+    "overall": 7
+  },
+  "improved": [
+    "Simplified UI screens clarify core functional outputs quickly.",
+    "Synchronized era transitions align cleanly with narration timing.",
+    "Grading on archival mailroom footage better matches sequence tone.",
+    "Results tags integrated directly onto the closing character frame."
+  ],
+  "to_reach_9": [
+    {
+      "priority": 1,
+      "t": 39.5,
+      "issue": "Stock character footage still feels generic compared to custom UI.",
+      "fix": "Replace with tailored live-action or authentic B2B client context.",
+      "effort": "large",
+      "needs_new_footage": true
+    },
+    {
+      "priority": 2,
+      "t": 28.0,
+      "issue": "UI dashboard transitions remain slightly abrupt.",
+      "fix": "Add subtle camera motion and contextual cursor interactions.",
+      "effort": "medium",
+      "needs_new_footage": false
+    },
+    {
+      "priority": 3,
+      "t": 44.0,
+      "issue": "Closing call to action visual lockup lacks punch.",
+      "fix": "Enhance logo animation and contrast on the final value prop.",
+      "effort": "small",
+      "needs_new_footage": false
+    }
+  ],
+  "ready_for_1080p": "not yet",
+  "one_sentence_verdict": "Clearer product representation and tighter pacing elevate the cut, but stock visuals still cap persuasion."
+}

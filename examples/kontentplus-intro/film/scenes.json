@@ -1,0 +1,244 @@
+{
+  "title": "KontentPlus \u2014 timeline cut",
+  "fps": 24,
+  "width": 1920,
+  "height": 1080,
+  "aspect": "16:9",
+  "background": "#0b0f14",
+  "titleBackground": "#0b0f14",
+  "titleColor": "#ffffff",
+  "transition": "cut",
+  "transitionDuration": 0.5,
+  "fadeIn": 0.5,
+  "fadeOut": 0.0,
+  "scenes": [
+    {
+      "key": "era1900",
+      "type": "video",
+      "src": "assets/clips/broll_merchant1900.mp4",
+      "duration": 7.06,
+      "transitionIn": "cut",
+      "transitionDuration": 0.5,
+      "clipAudio": true,
+      "clipAudioVolume": 0.45
+    },
+    {
+      "key": "era1926",
+      "type": "video",
+      "src": "assets/clips/ref_1926.mp4",
+      "duration": 3.95,
+      "transitionIn": "crossfade",
+      "transitionDuration": 0.45,
+      "clipAudio": true,
+      "clipAudioVolume": 0.45
+    },
+    {
+      "key": "era1960",
+      "type": "video",
+      "src": "assets/clips/broll_boardroom1960.mp4",
+      "duration": 3.43,
+      "transitionIn": "crossfade",
+      "transitionDuration": 0.45,
+      "clipAudio": true,
+      "clipAudioVolume": 0.45
+    },
+    {
+      "key": "era1990",
+      "type": "video",
+      "src": "assets/clips/broll_mailroom1990.mp4",
+      "duration": 3.6,
+      "transitionIn": "crossfade",
+      "transitionDuration": 0.45,
+      "clipAudio": true,
+      "clipAudioVolume": 0.45
+    },
+    {
+      "key": "era2010",
+      "type": "video",
+      "src": "assets/clips/broll_saasdesk2010.mp4",
+      "duration": 4.0,
+      "transitionIn": "crossfade",
+      "transitionDuration": 0.45,
+      "clipAudio": true,
+      "clipAudioVolume": 0.45
+    },
+    {
+      "key": "era2010b",
+      "type": "video",
+      "src": "assets/clips/ref_2016b.mp4",
+      "duration": 2.2,
+      "transitionIn": "crossfade",
+      "transitionDuration": 0.45,
+      "clipAudio": true,
+      "clipAudioVolume": 0.45
+    },
+    {
+      "key": "pixel",
+      "type": "title",
+      "text": " ",
+      "duration": 2.53,
+      "transitionIn": "cut"
+    },
+    {
+      "key": "app1",
+      "type": "image",
+      "src": "assets/ui/hero1.png",
+      "duration": 3.4,
+      "kenBurns": false,
+      "transitionIn": "blur",
+      "transitionDuration": 0.6
+    },
+    {
+      "key": "brain",
+      "type": "title",
+      "text": " ",
+      "duration": 2.22,
+      "transitionIn": "blur",
+      "transitionDuration": 0.5
+    },
+    {
+      "key": "ops",
+      "type": "title",
+      "text": " ",
+      "duration": 6.06,
+      "transitionIn": "blur",
+      "transitionDuration": 0.5
+    },
+    {
+      "key": "app4",
+      "type": "image",
+      "src": "assets/ui/hero4.png",
+      "duration": 5.52,
+      "kenBurns": false,
+      "transitionIn": "blur",
+      "transitionDuration": 0.5
+    },
+    {
+      "key": "cmo",
+      "type": "video",
+      "src": "assets/clips/scene_results.mp4",
+      "duration": 3.91,
+      "transitionIn": "blur",
+      "transitionDuration": 0.5,
+      "clipAudio": true,
+      "clipAudioVolume": 0.35
+    },
+    {
+      "key": "end",
+      "type": "end_card",
+      "text": "Marketing operations, handled.",
+      "duration": 7.5,
+      "cta": "Let's talk",
+      "transitionIn": "crossfade",
+      "transitionDuration": 0.8
+    }
+  ],
+  "audio": {
+    "music": "assets/audio/bgmusic_jazz_aligned.mp3",
+    "musicVolume": 0.16,
+    "musicFadeIn": 0.5,
+    "musicFadeOut": 3.0,
+    "sfx": [
+      {
+        "src": "assets/audio/vB_01.mp3",
+        "start": 0.3,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_02.mp3",
+        "start": 4.56,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_03.mp3",
+        "start": 7.06,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_04.mp3",
+        "start": 10.06,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_05.mp3",
+        "start": 13.04,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_06.mp3",
+        "start": 16.19,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_07.mp3",
+        "start": 22.15,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_08.mp3",
+        "start": 24.07,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_09.mp3",
+        "start": 28.69,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_10.mp3",
+        "start": 34.3,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_11.mp3",
+        "start": 39.27,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/vB_12.mp3",
+        "start": 43.63,
+        "volume": 1.0
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 25.17,
+        "volume": 0.22
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 27.82,
+        "volume": 0.18
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 30.04,
+        "volume": 0.2
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 30.84,
+        "volume": 0.2
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 31.84,
+        "volume": 0.18
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 32.94,
+        "volume": 0.2
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 34.14,
+        "volume": 0.22
+      },
+      {
+        "src": "assets/audio/ui_tick.mp3",
+        "start": 35.2,
+        "volume": 0.22
+      }
+    ]
+  }
+}

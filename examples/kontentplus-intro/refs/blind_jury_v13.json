@@ -1,0 +1,62 @@
+[
+  {
+    "scores": {
+      "story": 6.5,
+      "footage_quality": 5.5,
+      "editing_rhythm": 6.5,
+      "motion_design": 6.5,
+      "sound_and_vo": 6.5,
+      "product_clarity": 6.5,
+      "b2b_persuasion": 6.0,
+      "overall": 6.4
+    },
+    "strongest": [
+      "Clear chronological timeline framing modern marketing friction",
+      "Fluid UI animations demonstrating the product workflow and core value proposition"
+    ],
+    "weakest": [
+      {
+        "t": 10.0,
+        "issue": "Historical stock footage feels somewhat generic and varied in visual tone.",
+        "fix": "Apply unified color grading or film grain treatment to blend archival clips."
+      },
+      {
+        "t": 39.5,
+        "issue": "Abrupt cut from dynamic UI motion graphics to generic corporate meeting stock footage.",
+        "fix": "Transition smoothly through the interface directly to the end card or integrate live action subtly."
+      }
+    ],
+    "ship": "yes",
+    "verdict": "A cohesive, professional product launch video with solid pacing and clear messaging, held back slightly by standard stock visuals."
+  },
+  {
+    "scores": {
+      "story": 6,
+      "footage_quality": 6,
+      "editing_rhythm": 6,
+      "motion_design": 6,
+      "sound_and_vo": 6,
+      "product_clarity": 6,
+      "b2b_persuasion": 6,
+      "overall": 6
+    },
+    "strongest": [
+      "Cohesive historical framing that contextualizes the problem",
+      "Clean, legible product motion showing clear workflow inputs and outputs"
+    ],
+    "weakest": [
+      {
+        "t": 22,
+        "issue": "Abrupt tonal shift between the historical narrative and the software reveal.",
+        "fix": "Smooth the audio and visual transition into the logo reveal."
+      },
+      {
+        "t": 39,
+        "issue": "Ending live-action footage feels like generic corporate stock.",
+        "fix": "Maintain UI focus or use higher-grade custom lifestyle footage."
+      }
+    ],
+    "ship": "yes",
+    "verdict": "A solid, professional product explainer with a strong concept and clear narrative structure."
+  }
+]

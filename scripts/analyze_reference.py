@@ -6,7 +6,7 @@ camera language, product/brand strategy, audio style and copy-paste-ready prompt
 Multiple references are fused into one "style DNA" creative brief for your target film.
 
 Inputs: local files (.mp4/.mov/.webm), YouTube URLs (sent straight to Gemini, no download),
-        or other http(s) URLs (downloaded with yt-dlp first).
+        Google Drive share links (downloaded with the `gws` CLI when installed), or other http(s) URLs (yt-dlp).
 
 Usage:
     source ~/config.env   # needs GEMINI_API_KEY
@@ -104,7 +104,7 @@ Return ONLY JSON:
   "TYPOGRAPHY": str,
   "shot_plan": [{{"n": int, "beat": "hook|setup|build|payoff|cta", "duration_s": number, "shot_size": str, "camera": str,
                   "subject_action": str, "light_color": str, "product_visible": bool,
-                  "recommended_model": "omni|ltx|seedance|still_kenburns", "why_model": str,
+                  "recommended_model": "omni|flux3|ltx|seedance|still_kenburns", "why_model": str,
                   "image_prompt_seed": str, "video_prompt_seed": str}}],
   "consistency_locks_needed": {{"characters": [str], "locations": [str], "props": [str]}},
   "risks_and_mitigations": [str],
@@ -112,6 +112,8 @@ Return ONLY JSON:
 }}
 Model routing hints: Seedance blocks photoreal faces (use it for products/3D/motion refs, or 2.5 with video refs);
 Gemini Omni 1.1 Flash for hero shots with people, conversational edits and 360p drafts upscaled to 4K (3-10 s, extend to 40 s);
+FLUX 3 Video for shots with dialogue/lip-sync, several angles in one generation (SHOT N / HARD CUT), era or documentary formats,
+timed storyboard keyframes and cheap drafts that enhance to the same seed (5-20 s, continue +15 s, no reference videos);
 LTX 2.3/2.5 for cheap iteration, long takes, retakes; still + Ken Burns for zero-cost inserts. Stills come from GPT Image 2.
 
 ANALYSES:
@@ -128,6 +130,36 @@ def is_youtube(u):
 
 def is_url(u):
     return u.startswith("http://") or u.startswith("https://")
+
+
+def drive_file_id(u):
+    """Google Drive share link → fileId (file/d/<id>/…, open?id=<id>, uc?id=<id>)."""
+    m = re.search(r"drive\.google\.com/(?:file/d/|open\?id=|uc\?id=)([A-Za-z0-9_-]{20,})", u)
+    return m.group(1) if m else None
+
+
+def download_drive(file_id, out_dir):
+    """Download a Drive video with the Google Workspace CLI (`gws`, shared-drive aware). Needs `gws auth login` once."""
+    if not shutil.which("gws"):
+        raise SystemExit("Google Drive link given but `gws` (Google Workspace CLI) is not installed — download the file and pass a local path")
+    os.makedirs(out_dir, exist_ok=True)
+    meta = subprocess.run(["gws", "drive", "files", "get", "--params", json.dumps({"fileId": file_id, "fields": "name,mimeType,size", "supportsAllDrives": True})],
+                          capture_output=True, text=True)
+    name = "drive_ref.mp4"
+    try:
+        info = json.loads(meta.stdout); name = info.get("name") or name
+        if not str(info.get("mimeType", "")).startswith("video/"):
+            log(f"warning: Drive file is {info.get('mimeType')}, expected a video")
+    except Exception:
+        pass
+    fname = re.sub(r"[^A-Za-z0-9._-]+", "_", name); out = os.path.join(out_dir, fname)
+    log(f"Downloading Drive file {file_id} → {out} ...")
+    # `files get` + alt=media works on shared drives (the download endpoint rejects supportsAllDrives); gws refuses an --output outside its cwd
+    r = subprocess.run(["gws", "drive", "files", "get", "--params", json.dumps({"fileId": file_id, "alt": "media", "supportsAllDrives": True}), "-o", fname],
+                       capture_output=True, text=True, cwd=out_dir)
+    if r.returncode != 0 or not os.path.exists(out) or os.path.getsize(out) < 1000:
+        raise SystemExit(f"Drive download failed: {(r.stderr or r.stdout)[:300]}")
+    return out
 
 
 def slug(s):
@@ -261,7 +293,8 @@ def video_part(client, src, sample_fps, work_dir):
         part = types.Part(file_data=types.FileData(file_uri=src), video_metadata=meta) if meta else \
             types.Part(file_data=types.FileData(file_uri=src))
         return part, None, slug(src.rsplit("=", 1)[-1] if "=" in src else src.rsplit("/", 1)[-1])
-    path = download(src, work_dir) if is_url(src) else src
+    fid = drive_file_id(src) if is_url(src) else None
+    path = download_drive(fid, work_dir) if fid else (download(src, work_dir) if is_url(src) else src)
     if not os.path.exists(path):
         raise SystemExit(f"Input not found: {path}")
     f = upload_video(client, path)

@@ -1,0 +1,177 @@
+{
+  "per_dimension": {
+    "story": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 22.0,
+          "now": "Abrupt transition from historical recap to product reveal without an emotional hinge.",
+          "should_be": "Add a bridge line acknowledging modern fragmented marketing workflows before introducing the operator.",
+          "in_edit": true,
+          "effort": "small"
+        },
+        {
+          "t": 39.0,
+          "now": "Generic office stock shot weakens the problem-solution narrative arc.",
+          "should_be": "Show an operator interface delivering real-time ROI or direct agency relief.",
+          "in_edit": false,
+          "effort": "medium"
+        }
+      ]
+    },
+    "footage_quality": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 13.0,
+          "now": "Low-fidelity archival clips look inconsistent with modern UI elements.",
+          "should_be": "Replace with remastered, stylistically graded archival assets with uniform film grain.",
+          "in_edit": false,
+          "effort": "large"
+        },
+        {
+          "t": 39.0,
+          "now": "Flat corporate stock photo with visible compression artifacts.",
+          "should_be": "Replace with cinematic live-action studio footage matching dark UI aesthetic.",
+          "in_edit": false,
+          "effort": "large"
+        }
+      ]
+    },
+    "editing_rhythm": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 10.0,
+          "now": "Historical segment pacing drags relative to the rapid UI segment.",
+          "should_be": "Trim archival beats by 0.5s each to hit product reveal by 00:18.",
+          "in_edit": true,
+          "effort": "small"
+        },
+        {
+          "t": 30.0,
+          "now": "Multi-channel UI frames linger longer than required for key visual intake.",
+          "should_be": "Accelerate card transitions to maintain forward momentum.",
+          "in_edit": true,
+          "effort": "small"
+        }
+      ]
+    },
+    "motion_design": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 26.0,
+          "now": "Basic orbital node animation appears template-driven.",
+          "should_be": "Upgrade to dynamic 3D depth field with smooth vector interpolations.",
+          "in_edit": true,
+          "effort": "medium"
+        },
+        {
+          "t": 34.0,
+          "now": "Rule learning card slides in with linear easing.",
+          "should_be": "Apply spring easing and subtle micro-interactions to emphasize system intelligence.",
+          "in_edit": true,
+          "effort": "small"
+        }
+      ]
+    },
+    "sound_and_vo": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 22.0,
+          "now": "VO delivery lacks dynamic tonal shift when switching from historical critique to solution.",
+          "should_be": "Re-record with authoritative, confident cadence on 'So we built an operator.'",
+          "in_edit": true,
+          "effort": "medium"
+        },
+        {
+          "t": 28.0,
+          "now": "Lacks crisp foley and interface audio feedback for workflow automation.",
+          "should_be": "Layer tactile UI sound design with bespoke risers and subtle sub-bass hits.",
+          "in_edit": true,
+          "effort": "small"
+        }
+      ]
+    },
+    "product_clarity": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 24.0,
+          "now": "Knowledge base upload screen does not clearly indicate what input formats are ingested.",
+          "should_be": "Add callout badges clarifying automatic ingestion of docs, sheets, and transcripts.",
+          "in_edit": true,
+          "effort": "small"
+        },
+        {
+          "t": 32.0,
+          "now": "Analytics dashboard leaves loop closure and feedback application ambiguous.",
+          "should_be": "Add cursor movement highlighting the automated feedback-to-copy loop.",
+          "in_edit": true,
+          "effort": "medium"
+        }
+      ]
+    },
+    "b2b_persuasion": {
+      "current": 6,
+      "blockers": [
+        {
+          "t": 33.0,
+          "now": "Metrics shown focus on surface analytics rather than qualified enterprise pipeline.",
+          "should_be": "Display pipeline value, CAC reduction, and time-saved metrics.",
+          "in_edit": true,
+          "effort": "small"
+        },
+        {
+          "t": 43.0,
+          "now": "Outro ends on general branding without social proof or risk reversal.",
+          "should_be": "Overlay customer tier logos and clear CTA for automated pilot demo.",
+          "in_edit": true,
+          "effort": "small"
+        }
+      ]
+    }
+  },
+  "reachable_9": "partially",
+  "why": "Edit-level graphics and sound tweaks can elevate UI sequences, but archival visual consistency and premium live-action footage require production re-shoots.",
+  "beat_sheet_for_9": [
+    {
+      "t": 0.0,
+      "beat": "Punchy cold open establishing the historical tension between customer intimacy and scale."
+    },
+    {
+      "t": 8.0,
+      "beat": "Rapid archival montage demonstrating how each marketing era traded authenticity for reach."
+    },
+    {
+      "t": 16.0,
+      "beat": "Climax of modern data overload showing marketer paralysis across multiple screens."
+    },
+    {
+      "t": 20.0,
+      "beat": "Decisive sonic shift introducing the autonomous operator solution."
+    },
+    {
+      "t": 24.0,
+      "beat": "Clear ingestion demonstration showing instant synthesis of brand knowledge assets."
+    },
+    {
+      "t": 30.0,
+      "beat": "Omnichannel execution demo showing automated drafting, review, and live publishing."
+    },
+    {
+      "t": 36.0,
+      "beat": "Self-learning loop in action: one human edit instantly recalibrates entire brand memory."
+    },
+    {
+      "t": 41.0,
+      "beat": "Enterprise ROI validation displaying pipeline growth and executive reporting."
+    },
+    {
+      "t": 46.0,
+      "beat": "Clean closing lockup with enterprise social proof and unambiguous demo call to action."
+    }
+  ]
+}

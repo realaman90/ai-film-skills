@@ -1,0 +1,37 @@
+{
+  "scores": {
+    "story": 7,
+    "footage_quality": 6,
+    "editing_rhythm": 7,
+    "motion_design": 7,
+    "sound_and_vo": 7,
+    "product_clarity": 7,
+    "b2b_persuasion": 7,
+    "overall": 7
+  },
+  "improved": [
+    "Integrated motion sequence at 00:26 cleanly replaces generic stock footage.",
+    "Dynamic pixel-build logo animation and higher-contrast CTA strengthen the outro.",
+    "Operator cards now align better with actual brand identity."
+  ],
+  "to_reach_9": [
+    {
+      "priority": 1,
+      "t": 39.5,
+      "issue": "Meeting room scene displays synthetic-looking UI screen and generic stock staging.",
+      "fix": "Replace with authentic live-action footage showing real software in use.",
+      "effort": "large",
+      "needs_new_footage": true
+    },
+    {
+      "priority": 2,
+      "t": 16.5,
+      "issue": "2010s monitor setup looks overly staged with redundant alert iconography.",
+      "fix": "Trim clip duration or replace with cleaner archival clip.",
+      "effort": "small",
+      "needs_new_footage": false
+    }
+  ],
+  "ready_for_1080p": "yes",
+  "one_sentence_verdict": "The revised motion beats significantly improve cohesion, leaving the final meeting room scene as the only noticeable weak link."
+}

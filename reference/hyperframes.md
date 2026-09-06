@@ -145,3 +145,22 @@ Render speed on Apple Silicon: ~1.5× realtime at 1080p draft with 5 workers. Ev
 - Ken Burns scale on an `<img>` inside an `overflow:hidden` clip triggers `container_overflow` info notes → `data-layout-allow-overflow` on the img.
 - Seedance/Omni/LTX outputs can be VFR. HyperFrames pre-extracts frames via ffmpeg so it copes, but convert to CFR anyway for predictable `trim`: `ffmpeg -i in.mp4 -r 24 -vsync cfr -c:v libx264 -crf 18 out.mp4`.
 - `check` reports WCAG contrast on overlay text; white text over bright footage fails — add the text-shadow the generator uses or a scrim.
+
+
+## Native product beats, measured plates, multi-aspect (added 2026-09-05)
+
+- **Inject, don't screenshot.** Add a `title` scene with text `" "` to the spec, then have your overlay script replace its
+  inner HTML (regex on `<div id="scene-NN" class="clip title-card">…</div>`), strip the builder's `#scene-NN-h1` tween,
+  and append your CSS before `</style>` and your tweens before `window.__timelines["main"] = tl;`. All positions come
+  from `FW/FH` constants so the same script builds 16:9 and 9:16.
+- **Camera wrapper**: `#cam { position:absolute; width:FW; height:FH; transform-origin:0 0 }` around a wider world;
+  `tl.to("#cam", { x: FW/2 − wx·s, y: FH/2 − wy·s, scale: s })` centres a world point. Mark oversized children
+  `data-layout-allow-overflow`, stacked cards `data-layout-allow-overlap`.
+- **Counters**: tween a plain object and write `textContent` in `onUpdate` (seek-safe); `tabular-nums` on the number.
+- **Chart draw**: `stroke-dasharray` ≥ path length, tween `strokeDashoffset` to 0; fade the area fill after.
+- **Plates**: if a screenshot must appear, `measure_ui.py` the element boxes; in portrait place the plate as a card
+  (`object-fit: fill`, explicit left/top/width) and remap `cx/cy` for that scene.
+- **Era module in portrait**: resize the `<video>` to the module rect and mask with `clip-path: inset(0 round 18px)`
+  instead of a full-frame inset (builder CSS `video.clip` is cover-fit; override with the same specificity `video.era-mod`).
+- **Turn-key vertical**: `ASPECT=9:16 OUT_DIR=../film_916 python3 make_spec.py && build … --project ../film_916 && ASPECT=9:16 OUT_DIR=../film_916 python3 overlays.py`;
+  the vertical project dir only needs an `assets` symlink.

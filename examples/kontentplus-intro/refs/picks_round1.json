@@ -1,0 +1,292 @@
+{
+  "1900s market": {
+    "best": "c1900_b",
+    "in": 2.0,
+    "all": [
+      {
+        "authenticity": 5,
+        "motion_quality": 5,
+        "era_fidelity": 6,
+        "usability": 5,
+        "artefacts": [
+          {
+            "t": 1.5,
+            "issue": "Minor morphing around fingers and wrapped parcel during the exchange."
+          },
+          {
+            "t": 2.5,
+            "issue": "Subtle facial warping as the woman turns her head."
+          }
+        ],
+        "best_in_point": 2.0,
+        "verdict": "Passable period atmosphere and costume styling, though micro-morphing during object interaction reveals AI origins.",
+        "take": "c1900_a",
+        "total": 21
+      },
+      {
+        "authenticity": 5,
+        "motion_quality": 6,
+        "era_fidelity": 6,
+        "usability": 6,
+        "artefacts": [
+          {
+            "t": 1.8,
+            "issue": "Slightly unnatural separation and weight during handshake release"
+          },
+          {
+            "t": 4.5,
+            "issue": "Background figure enters doorway with stiff, synthetic gait"
+          }
+        ],
+        "best_in_point": 2.0,
+        "verdict": "Passable AI-generated period plate suitable for background or brief cutaway use, though digital sharpness reduces authentic archival feel.",
+        "take": "c1900_b",
+        "total": 23
+      }
+    ]
+  },
+  "1920s print": {
+    "best": "c1920_b",
+    "in": 0.0,
+    "all": [
+      {
+        "authenticity": 4,
+        "motion_quality": 4,
+        "era_fidelity": 5,
+        "usability": 4,
+        "artefacts": [
+          {
+            "t": 4.5,
+            "issue": "Phantom background figure suddenly manifests behind workers"
+          },
+          {
+            "t": 5.5,
+            "issue": "Left worker exhibits unnatural facial warping and artificial smiling"
+          },
+          {
+            "t": 6.5,
+            "issue": "Inconsistent background figure pops into existence on far left edge"
+          }
+        ],
+        "best_in_point": 0.0,
+        "verdict": "Period aesthetics are convincing initially, but AI morphing and popping background figures compromise mid-shot usability.",
+        "take": "c1920_a",
+        "total": 17
+      },
+      {
+        "authenticity": 4,
+        "motion_quality": 4,
+        "era_fidelity": 6,
+        "usability": 4,
+        "artefacts": [
+          {
+            "t": 2.5,
+            "issue": "Middle subject begins unnatural turning motion with face and coat warping"
+          },
+          {
+            "t": 4.5,
+            "issue": "Hands and newspaper edges display AI morphing and blending artefacts"
+          },
+          {
+            "t": 6.0,
+            "issue": "Inconsistent background trolley motion and slight jitter"
+          }
+        ],
+        "best_in_point": 0.0,
+        "verdict": "Visually plausible period aesthetic, but marred by telltale generative warping and unnatural hand/fabric motion upon closer inspection.",
+        "take": "c1920_b",
+        "total": 18
+      }
+    ]
+  },
+  "1960s agencies": {
+    "best": "c1960_b",
+    "in": 0.5,
+    "all": [
+      {
+        "authenticity": 5,
+        "motion_quality": 6,
+        "era_fidelity": 6,
+        "usability": 6,
+        "artefacts": [
+          {
+            "t": 1.8,
+            "issue": "Subtle warping around standing presenter's face as he lowers his hand"
+          },
+          {
+            "t": 2.6,
+            "issue": "Woman's writing hand motion exhibits unnatural stiffness and finger deformation"
+          },
+          {
+            "t": 3.4,
+            "issue": "Cigarette smoke exhibits unnatural AI dissipation patterns"
+          }
+        ],
+        "best_in_point": 0.5,
+        "verdict": "Passable as a modern stylized commercial recreation of a 1960s boardroom, though motion quirks and digital sharpness undermine archival authenticity.",
+        "take": "c1960_a",
+        "total": 23
+      },
+      {
+        "authenticity": 6,
+        "motion_quality": 6,
+        "era_fidelity": 7,
+        "usability": 6,
+        "artefacts": [
+          {
+            "t": 1.0,
+            "issue": "Unnatural smoke dispersion with slight digital looping characteristics"
+          },
+          {
+            "t": 2.5,
+            "issue": "Presenter pointer stick and wrist exhibit subtle stiffness and warping"
+          }
+        ],
+        "best_in_point": 0.5,
+        "verdict": "Passable period plate; staging and props fit the mid-century look despite minor synthetic smoke and motion rigidity.",
+        "take": "c1960_b",
+        "total": 25
+      }
+    ]
+  },
+  "1990s direct mail": {
+    "best": "c1990_a",
+    "in": 3.0,
+    "all": [
+      {
+        "authenticity": 6,
+        "motion_quality": 5,
+        "era_fidelity": 6,
+        "usability": 4,
+        "artefacts": [
+          {
+            "t": 1.0,
+            "issue": "Unnatural focal blur and slight morphing distortion on the left worker"
+          },
+          {
+            "t": 2.5,
+            "issue": "Jarring whip-pan transition cutting between two distinct setups"
+          },
+          {
+            "t": 4.2,
+            "issue": "Abrupt, unnatural paper physics during the mail bin dump"
+          }
+        ],
+        "best_in_point": 3.0,
+        "verdict": "Usable only in short segments after the 3-second mark due to the awkward mid-clip transition and initial still-animation artefacts.",
+        "take": "c1990_a",
+        "total": 21
+      },
+      {
+        "authenticity": 4,
+        "motion_quality": 5,
+        "era_fidelity": 4,
+        "usability": 4,
+        "artefacts": [
+          {
+            "t": 1.0,
+            "issue": "Unnatural focal blur shift across the subject's face and background."
+          },
+          {
+            "t": 2.5,
+            "issue": "AI gibberish text on the magazine cover and subtle finger morphing during handling."
+          },
+          {
+            "t": 3.5,
+            "issue": "Mail inside the box appears visually unstable and slightly warped."
+          }
+        ],
+        "best_in_point": 0.0,
+        "verdict": "Usable only as a fleeting stylized cutaway; modern digital sharpness and AI text artefacts compromise authentic archival credibility.",
+        "take": "c1990_b",
+        "total": 17
+      }
+    ]
+  },
+  "2010s platforms A (over the shoulder)": {
+    "best": "c2010_a",
+    "in": 2.0,
+    "all": [
+      {
+        "authenticity": 5,
+        "motion_quality": 5,
+        "era_fidelity": 5,
+        "usability": 4,
+        "artefacts": [
+          {
+            "t": 1.8,
+            "issue": "Unnatural hand transition and minor mesh warping as arm drops."
+          },
+          {
+            "t": 3.0,
+            "issue": "Dashboard UI abruptly shifts and morphs indistinctly."
+          },
+          {
+            "t": 4.8,
+            "issue": "Wrist and fingers distort while moving back toward hair."
+          }
+        ],
+        "best_in_point": 2.0,
+        "verdict": "Usable for brief background placement, but monitors show contemporary UI and hand motions suffer from generative morphing.",
+        "take": "c2010_a",
+        "total": 19
+      }
+    ]
+  },
+  "2010s platforms B (front-on)": {
+    "best": "c2010_b",
+    "in": 0.0,
+    "all": [
+      {
+        "authenticity": 4,
+        "motion_quality": 6,
+        "era_fidelity": 5,
+        "usability": 4,
+        "artefacts": [
+          {
+            "t": 1.0,
+            "issue": "Stylized floating UI overlays appear abruptly in 3D space, undermining archival realism."
+          },
+          {
+            "t": 2.5,
+            "issue": "Digital compositing edge fringe around subject's hand and hair against the graphic elements."
+          }
+        ],
+        "best_in_point": 0.0,
+        "verdict": "Usable only as a stylized commercial montage element; lacks documentary authenticity due to overt sci-fi UI graphics.",
+        "take": "c2010_b",
+        "total": 19
+      }
+    ]
+  },
+  "results meeting room": {
+    "best": "results_a",
+    "in": 0.5,
+    "all": [
+      {
+        "authenticity": 5,
+        "motion_quality": 6,
+        "era_fidelity": 6,
+        "usability": 5,
+        "artefacts": [
+          {
+            "t": 0.5,
+            "issue": "Unnatural hand articulation and slight rubbery finger motion during gesture"
+          },
+          {
+            "t": 2.5,
+            "issue": "Mug drinking motion lacks natural weight transfer and shows slight mouth-rim morphing"
+          },
+          {
+            "t": 0.0,
+            "issue": "Synthetic UI graphic with nonsensical micro-text and AI typography anomalies"
+          }
+        ],
+        "best_in_point": 0.5,
+        "verdict": "Passable as brief corporate B-roll, but synthetic graphic text and slightly stiff character interaction limit close inspection.",
+        "take": "results_a",
+        "total": 22
+      }
+    ]
+  }
+}

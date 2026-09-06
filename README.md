@@ -8,7 +8,7 @@ End-to-end AI film production for Claude Code. The agent handles creative decisi
 |---|---|---|
 | **Inspiration / reference analysis** | `analyze_reference.py` | Gemini video understanding (`gemini-3.8-flash`), ffmpeg scene detection, yt-dlp |
 | Storyboard stills | `generate_image_gpt.py` (+ `generate_image_byteplus.py`, `generate_image_gemini.py`) | **GPT Image 2** (OpenAI); Seedream 5 (Ark) and Nano Banana (Gemini) as fallbacks |
-| Cinematic video | `generate_video_omni.py`, `generate_video_seedance.py`, `generate_video_ltx.py` (+ `generate_video_veo.py`) | **Gemini Omni 1.1 Flash**, Seedance 2.5 / 2.0 / mini, LTX 2.5 / 2.3; Veo 3.1 fallback |
+| Cinematic video | `generate_video_omni.py`, `generate_video_flux.py`, `generate_video_seedance.py`, `generate_video_ltx.py` (+ `generate_video_veo.py`) | **Gemini Omni 1.1 Flash**, **FLUX 3 Video** (BFL), Seedance 2.5 / 2.0 / mini, LTX 2.5 / 2.3; Veo 3.1 fallback |
 | Voiceover / music / SFX | `generate_tts.py`, `generate_music.py`, `generate_sfx.py` | ElevenLabs |
 | Asset hosting | `media_host.py` auto-uploads local refs | Amazon S3 (presigned or public URL); only needed for Seedance / Seedream |
 | Assembly (fast) | `assemble.py` | ffmpeg |
@@ -58,6 +58,7 @@ Required keys (free tiers exist for most):
 | `ELEVENLABS_KEY`, `ELEVENLABS_VOICE` | [ElevenLabs](https://elevenlabs.io) | voice, music, SFX |
 | `ARK_API_KEY` | [BytePlus Ark](https://console.byteplus.com/ark) | Seedance 2.5 / 2.0, Seedream 5 |
 | `LTXV_API_KEY` | [LTX Video](https://docs.ltx.video/authentication) | LTX 2.5 / 2.3 |
+| `BFL_API_KEY` | [Black Forest Labs](https://dashboard.bfl.ai) | FLUX 3 Video (t2v, keyframes, continuation, draft → enhance, upscale) — files go inline as base64, no S3 |
 | `S3_BUCKET`, `S3_REGION`, `AWS_*` | Amazon S3 | hosts local images/videos as URLs for Seedance / Seedream (`S3_PUBLIC_URL` optional; presigned URLs otherwise) |
 
 ## Quick start
@@ -105,6 +106,7 @@ See [`SKILL.md`](SKILL.md#step-6-assemble-with-hyperframes) and [`reference/hype
 |---|---|
 | GPT Image 2 stills | [`reference/gpt-image.md`](reference/gpt-image.md) |
 | Gemini Omni video | [`reference/omni.md`](reference/omni.md) |
+| FLUX 3 Video (modes, keyframes, multi-shot, dialogue, draft workflow) | [`reference/flux3.md`](reference/flux3.md) |
 | Nano Banana prompting (fallback) | [`reference/nano-banana.md`](reference/nano-banana.md) |
 | Veo 3.1 prompting (fallback) | [`reference/veo.md`](reference/veo.md) |
 | Seedance 2.5 / 2.0 (incl. content policy gotchas) | [`reference/seedance.md`](reference/seedance.md) |
@@ -119,9 +121,31 @@ See [`SKILL.md`](SKILL.md#step-6-assemble-with-hyperframes) and [`reference/hype
 
 - **Seedance blocks photorealistic human faces.** Use 3D/Pixar-style characters, product shots, or fall back to Veo / LTX. See [`reference/seedance.md`](reference/seedance.md).
 - **Models change frequently.** If a script reports "model not found", run `python scripts/list_models.py` to discover current names.
-- **Costs are real.** Video is paid per second — draft with Omni `--resolution 360p`, Seedance `--model fast`/`mini` or `ltx-2-3-fast`, then upscale/regenerate the keepers. Reference analysis costs cents; run it before spending on clips.
+- **Costs are real.** Video is paid per second — draft with Omni `--resolution 360p`, FLUX 3 `--draft` (then `--enhance` the keeper — same seed), Seedance `--model fast`/`mini` or `ltx-2-3-fast`, then upscale/regenerate the keepers. Reference analysis costs cents; run it before spending on clips.
 - **HyperFrames installs its own agent skills** (`/hyperframes`, `/hyperframes-core`, …) into `~/.claude/skills` the first time it scaffolds — use them for anything beyond the generator.
 
 ## License
 
 MIT — see [`LICENSE`](LICENSE).
+
+### Added in 2.1.0 (2026-09-05)
+`pick_takes.py` (Gemini scores takes per slot) · `jury.py` (blind quality gate) · `vo_words.py` (phrase times from VO timestamps) ·
+`measure_ui.py` (headless-Chrome element boxes for overlays) · `master.sh` (conform / join / render+loudnorm / probe) ·
+`cost_report.py` (spend estimate from disk) · Omni `--upscale` now refines the original interaction (works from the EEA).
+SKILL.md gained: native product sections, word-synced editing, archival footage recipe, honest jury use, finals + 9:16 from one build.
+
+### Added in 2.2.0 (2026-09-06)
+`generate_video_flux.py` — FLUX 3 Video (Black Forest Labs): text / image / timed-keyframe / continuation modes, native dialogue + lip-sync,
+`SHOT N / HARD CUT` multi-shot in one generation, `--draft` → `--enhance` (⅓-cost drafts re-rendered at full quality from the cached bundle),
+`--upscale`, `--download` recovery, `--dry-run`; `reference/flux3.md` (API facts from the OpenAPI spec + the full prompting doctrine);
+`cost_report.py` prices FLUX sidecars; `analyze_reference.py` can recommend `flux3` per shot.
+
+### Server (shared Linux box) notes
+- Keys never live in the skill folder. Ship `config.env.example`; on a server make `~/config.env` a **loader** that sources
+  env files materialised from a vault (AWS SSM SecureString → `/srv/projects/.secrets/*.env` via a sync service). Split the
+  film keys into their own parameter (`/<org>/film/env`: `ELEVENLABS_KEY`, `ELEVENLABS_VOICE`, `ARK_API_KEY`, `LTXV_API_KEY`, `BFL_API_KEY`,
+  `S3_BUCKET`, `S3_REGION`, `S3_PREFIX`, `S3_PUBLIC_URL`) so it can be rotated without touching the shared OpenAI/Gemini keys.
+- Deps: Node 22, ffmpeg, `pip install --user --break-system-packages -r requirements.txt`, then `npx hyperframes@0.8.27 --version`
+  once (it downloads its own Chrome, ~114 MB). Rendering falls back to a software GPU (llvmpipe): a 2.5 s draft took 8 s on
+  4 vCPU, so draft first and render finals in the background.
+- Work inside the client's workspace so per-client isolation hooks apply; keep `renders/` out of any sync that pushes drafts.

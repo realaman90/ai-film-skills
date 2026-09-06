@@ -1,0 +1,332 @@
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=Tiro+Devanagari+Hindi&display=swap">
+<style>
+:root{
+  --ground:#F4F3EF; --surface:#FFFFFF; --ink:#23272B; --muted:#6C7278; --rule:#D8D5CE; --rule-soft:#E9E7E1;
+  --accent:#B5651D; --accent-ink:#8C4C12; --accent-soft:#F4E6D6;
+  --good:#2F7A57; --good-soft:#E0F0E7; --warn:#A63A2B; --warn-soft:#F6E3DF; --pending:#8A8F94; --pending-soft:#ECEBE7;
+  --night:#2B3A67;
+  --display:"Bricolage Grotesque",ui-sans-serif,system-ui,sans-serif;
+  --body:"Literata",Georgia,"Times New Roman",serif;
+  --mono:"Courier Prime","Courier New",Courier,monospace;
+  --hindi:"Tiro Devanagari Hindi","Noto Serif Devanagari","Kohinoor Devanagari",serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --ground:#15171A; --surface:#1E2124; --ink:#E8E6E1; --muted:#9AA0A6; --rule:#33373C; --rule-soft:#2A2E33;
+    --accent:#D9873A; --accent-ink:#E9A35C; --accent-soft:#3A2A18;
+    --good:#5FB48A; --good-soft:#1C3128; --warn:#E07A6B; --warn-soft:#3A1F1B; --pending:#8A9096; --pending-soft:#26292D;
+    --night:#8FA3D9;
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#15171A; --surface:#1E2124; --ink:#E8E6E1; --muted:#9AA0A6; --rule:#33373C; --rule-soft:#2A2E33;
+  --accent:#D9873A; --accent-ink:#E9A35C; --accent-soft:#3A2A18;
+  --good:#5FB48A; --good-soft:#1C3128; --warn:#E07A6B; --warn-soft:#3A1F1B; --pending:#8A9096; --pending-soft:#26292D;
+  --night:#8FA3D9;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-ink)}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px 80px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0;line-height:1.05}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.hi{font-family:var(--hindi);font-size:1.15em;line-height:1.5}
+.mono{font-family:var(--mono)}
+.tab{font-variant-numeric:tabular-nums}
+
+/* masthead */
+.mast{display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;padding:44px 0 24px;border-bottom:2px solid var(--ink)}
+.mast h1{font-size:clamp(34px,5vw,58px);font-weight:700;letter-spacing:-.02em}
+.mast h1 .hi{font-size:.92em;color:var(--accent-ink);display:block;margin-bottom:6px}
+.mast .dek{max-width:62ch;margin-top:14px;font-size:17px;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(4,auto);gap:10px}
+.tile{padding:12px 14px;border:1px solid var(--rule);background:var(--surface);min-width:96px}
+.tile b{display:block;font-family:var(--display);font-size:28px;line-height:1;font-weight:700}
+.tile span{display:block;margin-top:4px;font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-family:var(--mono)}
+.tile.good b{color:var(--good)} .tile.warn b{color:var(--warn)}
+
+/* timeline strip */
+.strip{margin:22px 0 8px}
+.strip .acts{display:flex;gap:6px}
+.strip .act{display:flex;flex-direction:column;gap:6px}
+.strip .bar{display:flex;gap:3px;height:34px}
+.strip .blk{border:0;padding:0;cursor:pointer;background:var(--pending-soft);border-top:3px solid var(--pending);color:var(--ink);font-family:var(--mono);font-size:11px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:3px}
+.strip .blk[data-status="approved"]{background:var(--good-soft);border-top-color:var(--good)}
+.strip .blk[data-status="changes"]{background:var(--warn-soft);border-top-color:var(--warn)}
+.strip .blk:focus-visible,.btn:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.strip .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.legend{display:flex;gap:18px;font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.legend .a i{background:var(--good)} .legend .c i{background:var(--warn)} .legend .p i{background:var(--pending)}
+
+/* review controls */
+.howto{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center;margin:26px 0 8px;padding:16px 18px;background:var(--surface);border:1px solid var(--rule)}
+.howto p{margin:0;max-width:70ch;color:var(--muted);font-size:15px}
+.howto label{font-family:var(--mono);font-size:12px;color:var(--muted);display:block;margin-bottom:4px;letter-spacing:.04em;text-transform:uppercase}
+.howto input{font:inherit;font-family:var(--body);padding:8px 10px;border:1px solid var(--rule);background:var(--ground);color:var(--ink);min-width:220px}
+.sync{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:6px}
+
+/* sections */
+section{margin-top:44px}
+.sec-h{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--ink);padding-bottom:8px;margin-bottom:18px}
+.sec-h h2{font-size:26px;font-weight:700;letter-spacing:-.01em}
+.sec-h .eyebrow{margin:0}
+
+/* cast */
+.cast{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--rule);display:flex;flex-direction:column}
+.card .img{aspect-ratio:1/1;background:var(--rule-soft);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.card .img img{width:100%;height:100%;object-fit:cover;display:block}
+.card .img.empty{font-family:var(--mono);font-size:12px;color:var(--muted);text-align:center;padding:16px;aspect-ratio:auto;min-height:72px}
+.card .body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.card h3{font-size:17px;font-weight:700}
+.card .idstr{font-family:var(--mono);font-size:12.5px;line-height:1.45;color:var(--ink)}
+.card .meta{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--muted)}
+.badge{display:inline-block;font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border:1px solid currentColor;color:var(--accent-ink)}
+
+/* scenes */
+.act-h{margin:38px 0 14px;display:flex;align-items:baseline;gap:14px}
+.act-h h2{font-size:22px}
+.act-h .eyebrow{margin:0}
+.scene{background:var(--surface);border:1px solid var(--rule);margin-bottom:18px;border-left:4px solid var(--pending)}
+.scene[data-status="approved"]{border-left-color:var(--good)}
+.scene[data-status="changes"]{border-left-color:var(--warn)}
+.scene .head{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--rule-soft)}
+.scene .num{font-family:var(--display);font-size:30px;font-weight:700;line-height:1;color:var(--accent-ink);min-width:44px}
+.scene .ttl h3{font-size:20px;font-weight:700}
+.scene .slug{font-family:var(--mono);font-size:12.5px;color:var(--muted);margin-top:3px;letter-spacing:.02em}
+.pill{font-family:var(--mono);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;padding:4px 9px;border-radius:2px;background:var(--pending-soft);color:var(--pending);white-space:nowrap}
+.pill[data-status="approved"]{background:var(--good-soft);color:var(--good)}
+.pill[data-status="changes"]{background:var(--warn-soft);color:var(--warn)}
+.scene .grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1.5fr) 250px;gap:0}
+.scene .col{padding:16px 18px;min-width:0}
+.scene .col + .col{border-left:1px solid var(--rule-soft)}
+.k{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 5px}
+.k + p{margin:0 0 14px;font-size:15px}
+.learns{background:var(--accent-soft);border-left:3px solid var(--accent);padding:10px 12px;margin:0 0 14px;font-size:15px}
+.learns .k{color:var(--accent-ink)}
+.shift{font-family:var(--mono);font-size:13px;margin:0 0 14px}
+.castline{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--mono);font-size:11.5px;padding:2px 8px;border:1px solid var(--rule);background:var(--ground)}
+table{border-collapse:collapse;width:100%;font-family:var(--mono);font-size:13px}
+th{text-align:left;font-weight:400;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:0 8px 6px 0;border-bottom:1px solid var(--rule)}
+td{padding:7px 8px 7px 0;vertical-align:top;border-bottom:1px solid var(--rule-soft)}
+td.n{width:28px;color:var(--muted)} td.sz{width:82px;white-space:nowrap} td.s{width:34px;text-align:right}
+tfoot td{border:0;padding-top:8px;color:var(--muted)}
+.dlg{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.dlg li{display:grid;grid-template-columns:118px 1fr;gap:10px;align-items:baseline}
+.dlg .who{font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.dlg .who.narr{color:var(--night)}
+.dlg .en{font-family:var(--mono);font-size:12.5px;color:var(--muted);display:block;margin-top:2px}
+.cont{margin:14px 0 0;font-size:13.5px;color:var(--muted);border-top:1px dashed var(--rule);padding-top:10px}
+.cont .k{display:inline;margin-right:6px}
+.rail{background:var(--ground)}
+.rail .frame{margin:0 0 12px;border:1px solid var(--rule);background:#000}
+.rail .frame img{width:100%;display:block}
+.rail .frame span{display:block;font-family:var(--mono);font-size:11px;color:var(--muted);padding:5px 8px;background:var(--surface)}
+.rail .frame.small{opacity:.85}
+.btns{display:flex;flex-direction:column;gap:8px}
+.btn{font-family:var(--display);font-weight:700;font-size:14px;padding:9px 12px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);cursor:pointer;text-align:left;display:flex;justify-content:space-between;align-items:center}
+.btn:hover{border-color:var(--ink)}
+.btn.good[aria-pressed="true"]{background:var(--good);border-color:var(--good);color:#fff}
+.btn.warn[aria-pressed="true"]{background:var(--warn);border-color:var(--warn);color:#fff}
+.btn.ghost{font-weight:500;color:var(--muted);font-size:13px;border-style:dashed}
+textarea{width:100%;min-height:96px;margin-top:10px;font:inherit;font-size:14px;padding:9px 10px;border:1px solid var(--rule);background:var(--surface);color:var(--ink);resize:vertical}
+.saved{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:6px;min-height:14px}
+footer{margin-top:56px;padding-top:16px;border-top:1px solid var(--rule);font-family:var(--mono);font-size:12px;color:var(--muted);line-height:1.7}
+@media (max-width:980px){
+  .mast{grid-template-columns:1fr}
+  .tiles{grid-template-columns:repeat(4,1fr)}
+  .scene .grid{grid-template-columns:1fr}
+  .scene .col + .col{border-left:0;border-top:1px solid var(--rule-soft)}
+  .howto{grid-template-columns:1fr}
+}
+@media (max-width:600px){.tiles{grid-template-columns:repeat(2,1fr)} .dlg li{grid-template-columns:1fr} .wrap{padding:0 16px 60px}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+
+<div class="wrap">
+  <header class="mast">
+    <div>
+      <div class="eyebrow" id="m-eyebrow">Director's sheet · scene plan before any frame is generated</div>
+      <h1 id="m-title"></h1>
+      <p class="dek" id="m-dek"></p>
+    </div>
+    <div class="tiles" id="tiles">
+      <div class="tile good"><b id="t-approved">0</b><span>approved</span></div>
+      <div class="tile warn"><b id="t-changes">0</b><span>changes</span></div>
+      <div class="tile"><b id="t-pending">20</b><span>pending</span></div>
+      <div class="tile"><b id="t-runtime" class="tab">8:05</b><span>planned</span></div>
+    </div>
+  </header>
+
+  <div class="strip" id="strip"></div>
+  <div class="legend"><span class="a"><i></i>approved</span><span class="c"><i></i>needs changes</span><span class="p"><i></i>pending</span><span>· width is scene length · click a block to jump</span></div>
+
+  <div class="howto">
+    <p>Read each scene as a director reads a call sheet: what the audience must learn there, the coverage, and the lines. Approve it, or mark it for changes and say what. Nothing is generated until every scene is approved.</p>
+    <div><label for="reviewer">Reviewing as</label><input id="reviewer" placeholder="your name" autocomplete="off"><div class="sync" id="sync">connecting…</div><button class="btn ghost" id="export" style="margin-top:10px;width:100%">Copy decisions as JSON</button></div>
+  </div>
+
+  <section>
+    <div class="sec-h"><h2>Cast lock</h2><div class="eyebrow">identity strings · pasted verbatim into every prompt</div></div>
+    <div class="cast" id="cast"></div>
+  </section>
+
+  <section>
+    <div class="sec-h"><h2>Scenes</h2><div class="eyebrow" id="scount"></div></div>
+    <div id="scenes"></div>
+  </section>
+
+  <footer>
+    Source: v3/story/treatment.md · cast sheets v2/refs/ · frames marked "shot in v2" come from the second pilot and will be retaken where the sheet says so.<br>
+    Approvals and notes are stored with this page and read back by the production before Gate 3.
+  </footer>
+</div>
+
+<script>
+/*__DATA__*/
+const CAST=PLAN.cast, SCENES=PLAN.scenes, ACTS=PLAN.acts;
+const $=(s,r=document)=>r.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const STATE={}; // id -> {status, notes, reviewer, updatedAt}
+let db=null, saveTimers={};
+const LS="jjg-sheet-v1";
+try{Object.assign(STATE, JSON.parse(localStorage.getItem(LS)||"{}"));}catch(e){}
+try{$("#reviewer").value=localStorage.getItem(LS+":reviewer")||"";}catch(e){}
+
+function statusOf(id){return (STATE[id]&&STATE[id].status)||"pending";}
+function words(s){return s.trim().split(/\s+/).length;}
+function fmt(sec){return Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0");}
+
+function renderCast(){
+  $("#cast").innerHTML=CAST.map(c=>`
+    <article class="card">
+      <div class="img ${c.image&&IMAGES[c.image]?"":"empty"}">${c.image&&IMAGES[c.image]?`<img alt="${esc(c.name)} reference sheet" src="${IMAGES[c.image]}">`:"Reference sheet still to generate from this string"}</div>
+      <div class="body">
+        <h3>${esc(c.name)} ${c.new?'<span class="badge">new</span>':""}</h3>
+        <div class="idstr">${esc(c.idstr)}</div>
+        <div class="meta"><span>${words(c.idstr)} words · budget 30–50</span><span>${c.image&&IMAGES[c.image]?"sheet locked":"string only"}</span></div>
+      </div>
+    </article>`).join("");
+}
+
+function renderStrip(){
+  const total=SCENES.reduce((a,s)=>a+s.dur,0);
+  const acts=[1,2,3].map(a=>{
+    const ss=SCENES.filter(s=>s.act===a); const w=ss.reduce((x,s)=>x+s.dur,0)/total*100;
+    return `<div class="act" style="flex:0 0 calc(${w.toFixed(2)}% - 4px)"><div class="lbl">${esc(ACTS[a])}</div><div class="bar">${ss.map(s=>`<button class="blk" data-id="${s.id}" data-status="${statusOf(s.id)}" style="flex:${s.dur}" title="${esc(s.n+". "+s.title+" · "+s.dur+" s")}" aria-label="Jump to scene ${s.n}">${s.n}</button>`).join("")}</div></div>`;
+  }).join("");
+  $("#strip").innerHTML=`<div class="acts">${acts}</div>`;
+  $("#strip").querySelectorAll(".blk").forEach(b=>b.addEventListener("click",()=>{document.getElementById(b.dataset.id).scrollIntoView({block:"start"});}));
+  $("#t-runtime").textContent=fmt(total);
+}
+
+function sceneHTML(s){
+  const st=statusOf(s.id); const n=STATE[s.id]||{};
+  const shots=s.shots.map((sh,i)=>`<tr><td class="n">${i+1}</td><td class="sz">${esc(sh.size)}</td><td>${esc(sh.action)}</td><td class="s tab">${sh.sec}</td></tr>`).join("");
+  const dlg=s.dialogue.length?`<ul class="dlg">${s.dialogue.map(d=>`<li><span class="who ${d.kind==="narr"?"narr":""}">${esc(d.who)}</span><span><span class="hi" lang="hi">${esc(d.native)}</span><span class="en">${esc(d.en)}</span></span></li>`).join("")}</ul>`:`<p class="cont" style="border:0;padding:0">No dialogue. Ambient and picture only.</p>`;
+  const previs=s.previs&&IMAGES[s.previs]?`<div class="frame"><img alt="Previs frame: how scene ${s.n} is planned to look" src="${IMAGES[s.previs]}"><span>previs · how it will appear</span></div>`:"";
+  const frame=s.frame&&IMAGES[s.frame]?`<div class="frame small"><img alt="Frame from an earlier take of this scene" src="${IMAGES[s.frame]}"><span>earlier take · ${esc(s.v2||"")}</span></div>`:"";
+  return `<article class="scene" id="${s.id}" data-status="${st}">
+    <div class="head">
+      <div class="num tab">${String(s.n).padStart(2,"0")}</div>
+      <div class="ttl"><h3>${esc(s.title)}</h3><div class="slug">${esc(s.slug)} · ${s.dur} s · ${s.shots.length} shots · one take</div></div>
+      <span class="pill" data-status="${st}">${st==="changes"?"needs changes":st}</span>
+    </div>
+    <div class="grid">
+      <div class="col">
+        <p class="k">Why this scene exists</p><p>${esc(s.purpose)}</p>
+        <div class="learns"><p class="k">What the audience learns here</p>${esc(s.learns)}</div>
+        <p class="k">Value shift</p><p class="shift">${esc(s.shift)}</p>
+        <p class="k">Cast</p><div class="castline">${s.cast.map(c=>{const cc=CAST.find(x=>x.id===c);return `<span class="chip">${esc(cc?cc.name.split(",")[0]:c)}</span>`;}).join("")}</div>
+      </div>
+      <div class="col">
+        <p class="k">Coverage</p>
+        <table><thead><tr><th>#</th><th>Size</th><th>Action · camera</th><th style="text-align:right">s</th></tr></thead>
+        <tbody>${shots}</tbody><tfoot><tr><td colspan="4">Total: ${s.dur}s / ${s.shots.length} shots / 16:9</td></tr></tfoot></table>
+        <p class="k" style="margin-top:14px">Dialogue</p>${dlg}
+        <p class="cont"><span class="k">Continuity</span>${esc(s.cont)}</p>
+      </div>
+      <div class="col rail">
+        ${previs}${frame}
+        <p class="k">Director's decision</p>
+        <div class="btns">
+          <button class="btn good" data-act="approved" aria-pressed="${st==="approved"}">Approve scene <span>✓</span></button>
+          <button class="btn warn" data-act="changes" aria-pressed="${st==="changes"}">Needs changes <span>↺</span></button>
+          <button class="btn ghost" data-act="pending">Clear decision</button>
+        </div>
+        <textarea placeholder="Notes for the retake or rewrite: what to change, what to keep.">${esc(n.notes||"")}</textarea>
+        <div class="saved">${n.updatedAt?`${esc(n.reviewer||"someone")} · ${new Date(n.updatedAt).toLocaleString()}`:""}</div>
+      </div>
+    </div>
+  </article>`;
+}
+
+function renderScenes(){
+  let html="", act=0;
+  for(const s of SCENES){
+    if(s.act!==act){act=s.act; const ss=SCENES.filter(x=>x.act===act); html+=`<div class="act-h"><h2>${esc(ACTS[act])}</h2><div class="eyebrow">${ss.length} scenes · ${fmt(ss.reduce((a,x)=>a+x.dur,0))}</div></div>`;}
+    html+=sceneHTML(s);
+  }
+  $("#scenes").innerHTML=html;
+  $("#scount").textContent=`${SCENES.length} scenes · ${SCENES.reduce((a,s)=>a+s.shots.length,0)} shots`;
+  $("#scenes").querySelectorAll(".scene").forEach(el=>{
+    const id=el.id;
+    el.querySelectorAll(".btn").forEach(b=>b.addEventListener("click",()=>decide(id,b.dataset.act)));
+    el.querySelector("textarea").addEventListener("input",e=>{clearTimeout(saveTimers[id]);saveTimers[id]=setTimeout(()=>saveNotes(id,e.target.value),700);});
+  });
+}
+
+function refreshCounts(){
+  const c={approved:0,changes:0,pending:0};
+  SCENES.forEach(s=>c[statusOf(s.id)]++);
+  $("#t-approved").textContent=c.approved; $("#t-changes").textContent=c.changes; $("#t-pending").textContent=c.pending;
+}
+function applyState(id){
+  const el=document.getElementById(id); if(!el) return; const st=statusOf(id); const n=STATE[id]||{};
+  el.dataset.status=st; const pill=el.querySelector(".pill"); pill.dataset.status=st; pill.textContent=st==="changes"?"needs changes":st;
+  el.querySelectorAll(".btn[data-act]").forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.act===st&&st!=="pending")));
+  const ta=el.querySelector("textarea"); if(document.activeElement!==ta && (n.notes||"")!==ta.value) ta.value=n.notes||"";
+  el.querySelector(".saved").textContent=n.updatedAt?`${n.reviewer||"someone"} · ${new Date(n.updatedAt).toLocaleString()}`:"";
+  const blk=$("#strip").querySelector(`.blk[data-id="${id}"]`); if(blk) blk.dataset.status=st;
+  refreshCounts();
+}
+function reviewer(){return ($("#reviewer").value||"").trim();}
+function persistLocal(){try{localStorage.setItem(LS,JSON.stringify(STATE));}catch(e){}}
+async function write(id){
+  const rec=STATE[id]; persistLocal(); applyState(id);
+  if(!db){$("#sync").textContent="saved on this device only (no shared store in this view)";return;}
+  try{await db.doc("reviews/"+id).set(rec); $("#sync").textContent="shared · saved "+new Date().toLocaleTimeString();}
+  catch(e){$("#sync").textContent="could not save ("+(e&&e.code||"error")+"); kept on this device";}
+}
+function decide(id,status){
+  const prev=STATE[id]||{};
+  STATE[id]={...prev,id,status,notes:prev.notes||"",reviewer:reviewer(),updatedAt:Date.now()};
+  write(id);
+}
+function saveNotes(id,notes){
+  const prev=STATE[id]||{};
+  STATE[id]={...prev,id,status:prev.status||"pending",notes,reviewer:reviewer(),updatedAt:Date.now()};
+  write(id);
+}
+$("#export").addEventListener("click",async()=>{const out={plan:PLAN.title,exportedAt:new Date().toISOString(),decisions:SCENES.map(s=>({id:s.id,n:s.n,title:s.title,...(STATE[s.id]||{status:"pending",notes:""})}))};const txt=JSON.stringify(out,null,1);try{await navigator.clipboard.writeText(txt);$("#export").textContent="Copied — paste it back to the production";}catch(e){const w=window.open("","_blank");if(w){w.document.write("<pre>"+txt.replace(/</g,"&lt;")+"</pre>");}}});
+$("#reviewer").addEventListener("input",e=>{try{localStorage.setItem(LS+":reviewer",e.target.value);}catch(x){}});
+
+$("#m-title").innerHTML=(PLAN.title_native?`<span class="hi">${esc(PLAN.title_native)}</span>`:"")+esc(PLAN.title); $("#m-dek").textContent=PLAN.spine+" Approve or send back each scene below; your decisions come back to the production."; if(PLAN.draft) $("#m-eyebrow").textContent="Director's sheet · "+PLAN.draft+" · scene plan before any frame is generated";
+renderCast(); renderStrip(); renderScenes(); refreshCounts();
+
+(async()=>{
+  if(!(window.claude&&window.claude.use)){$("#sync").textContent="saved on this device only";return;}
+  db=await claude.use("db");
+  if(!db){$("#sync").textContent="saved on this device only (shared store unavailable here)";return;}
+  $("#sync").textContent="shared store connected";
+  db.collection("reviews").onSnapshot(snap=>{
+    snap.docs.forEach(d=>{const id=d.id||(d.ref&&d.ref.id); const data=d.data(); if(!data) return; const key=id||data.id; if(!key) return;
+      const local=STATE[key]; if(!local||(data.updatedAt||0)>=(local.updatedAt||0)){STATE[key]=data; applyState(key);} });
+    persistLocal();
+  },e=>{$("#sync").textContent="live updates paused ("+(e&&e.code||"error")+")";});
+})();
+</script>

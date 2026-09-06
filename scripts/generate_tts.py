@@ -70,7 +70,7 @@ def main():
             data = response.json()
             # Save audio
             import base64
-            audio_bytes = base64.b64decode(data["audio_base_64"])
+            audio_bytes = base64.b64decode(data.get("audio_base64") or data.get("audio_base_64") or (_ for _ in ()).throw(KeyError(f"no audio in response: {list(data.keys())} {str(data)[:300]}")))
             with open(args.output, "wb") as f:
                 f.write(audio_bytes)
             # Save timestamps

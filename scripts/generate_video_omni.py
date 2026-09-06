@@ -223,10 +223,24 @@ def main():
     task = args.task
     # --- uploaded media (edit / extend / upscale / ref videos) go through the Files API
     if args.upscale:
-        print(f"Uploading {args.upscale} for upscale...")
-        content.append({"type": "document", "uri": upload_file(args.upscale, key)})
-        prompt = prompt or f"Upscale this video to {args.resolution}. Keep every frame, motion and audio identical."
-        task = task or "edit"
+        # Preferred path: refine the ORIGINAL interaction (sidecar <clip>.mp4.json) at the higher resolution. Uploaded-video
+        # edit tasks are rejected in EEA/CH/UK ("Exactly one input video is required for edit task"); --previous works
+        # everywhere and yields a true upscale (frame diff ≈ 2/255 vs the source). Falls back to the upload route otherwise.
+        side = args.upscale + ".json"
+        prev_id = None
+        if os.path.exists(side):
+            try:
+                prev_id = json.load(open(side)).get("interaction_id")
+            except Exception:
+                prev_id = None
+        prompt = prompt or f"Upscale this exact video to {args.resolution}. Keep every frame, every motion, the timing, the framing and the audio identical. Do not change anything."
+        if prev_id and not args.previous:
+            print(f"Upscaling via the original interaction {prev_id[:24]}... (no upload)")
+            args.previous = prev_id
+        else:
+            print(f"Uploading {args.upscale} for upscale...")
+            content.append({"type": "document", "uri": upload_file(args.upscale, key)})
+            task = task or "edit"
     if args.extend:
         print(f"Uploading {args.extend} for extension...")
         content.append({"type": "document", "uri": upload_file(args.extend, key)})

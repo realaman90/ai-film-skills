@@ -50,3 +50,20 @@ Rate limit tier 1 = 5 images/min — parallelize at most 4 stills at a time.
 
 `--aspect 16:9 --size 1K --quality medium`: 1536×1024 product still with the label text "NORRA" rendered correctly,
 38 s, 54 input / 1372 output tokens. Used directly as the Omni first frame — composition preserved.
+
+## Photorealism stack (learned on the KontentPlus intro, 2026-09-04)
+
+Default output leans "showroom render": symmetrical, spotless, glossy. OpenAI's own prompting guide
+(developers.openai.com/cookbook/examples/multimodal/image-gen-models-prompting-guide) and our tests agree on the fix:
+
+1. Say **"photorealistic"** and **"a real photograph taken on a real camera"** explicitly — these words switch modes.
+2. Structure the prompt **SCENE → SUBJECT → DETAILS → CONSTRAINTS → USE** (labelled segments debug better than a paragraph).
+3. Camera language is for *composition and mood*, not physics: "handheld from the doorway, slightly off-axis, 35mm, f/2,
+   ISO 1600, natural available light". Specs are interpreted loosely; the framing intent lands.
+4. **Ask for imperfections**: cable clutter, a coffee ring, post-its, uneven frames, worn oak, dust in the lamp light, pilling
+   knitwear, pores. "Documentary commercial look, not a 3D render, not a showroom, not symmetrical."
+5. Avoid render vocabulary ("octane", "8k", "concept art", "hyper-detailed") and stock-photo words ("stunning", "beautiful").
+6. For people: "honest and unposed, real skin texture, no retouching" and give them something to do or a thought.
+7. Reference images: name each by index and role ("Image 1 is the set reference photograph — keep every object where it is").
+
+Set references made this way stayed consistent across night/day variants and worked as GPT Image 2 `--ref` inputs.

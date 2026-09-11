@@ -227,7 +227,7 @@ function renderStrip(){
 function sceneHTML(s){
   const st=statusOf(s.id); const n=STATE[s.id]||{};
   const shots=s.shots.map((sh,i)=>`<tr><td class="n">${i+1}</td><td class="sz">${esc(sh.size)}</td><td>${esc(sh.action)}</td><td class="s tab">${sh.sec}</td></tr>`).join("");
-  const dlg=s.dialogue.length?`<ul class="dlg">${s.dialogue.map(d=>`<li><span class="who ${d.kind==="narr"?"narr":""}">${esc(d.who)}</span><span><span class="hi" lang="hi">${esc(d.native)}</span><span class="en">${esc(d.en)}</span></span></li>`).join("")}</ul>`:`<p class="cont" style="border:0;padding:0">No dialogue. Ambient and picture only.</p>`;
+  const dlg=s.dialogue.length?`<ul class="dlg">${s.dialogue.map(d=>`<li><span class="who ${d.kind==="narr"?"narr":""}">${esc(d.who)}</span><span><span class="${d.native===d.en?"":"hi"}" lang="${d.native===d.en?"":"hi"}">${esc(d.native)}</span>${d.native===d.en?"":`<span class="en">${esc(d.en)}</span>`}</span></li>`).join("")}</ul>`:`<p class="cont" style="border:0;padding:0">No dialogue. Ambient and picture only.</p>`;
   const previs=s.previs&&IMAGES[s.previs]?`<div class="frame"><img alt="Previs frame: how scene ${s.n} is planned to look" src="${IMAGES[s.previs]}"><span>previs · how it will appear</span></div>`:"";
   const frame=s.frame&&IMAGES[s.frame]?`<div class="frame small"><img alt="Frame from an earlier take of this scene" src="${IMAGES[s.frame]}"><span>earlier take · ${esc(s.v2||"")}</span></div>`:"";
   return `<article class="scene" id="${s.id}" data-status="${st}">

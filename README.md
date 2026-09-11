@@ -7,7 +7,7 @@ End-to-end AI film production for Claude Code. The agent handles creative decisi
 | Stage | Tool | Backed by |
 |---|---|---|
 | **Inspiration / reference analysis** | `analyze_reference.py` | Gemini video understanding (`gemini-3.8-flash`), ffmpeg scene detection, yt-dlp |
-| Storyboard stills | `generate_image_gpt.py` (+ `generate_image_byteplus.py`, `generate_image_gemini.py`) | **GPT Image 2** (OpenAI); Seedream 5 (Ark) and Nano Banana (Gemini) as fallbacks |
+| Storyboard stills | `generate_image_gpt.py` (+ `generate_image_byteplus.py`, `generate_image_gemini.py`) | **GPT Image 2.5 Sunburst** (OpenAI, default; Flare and GPT Image 2 via `--model`); Seedream 5 (Ark) and Nano Banana (Gemini) as fallbacks |
 | Cinematic video | `generate_video_omni.py`, `generate_video_flux.py`, `generate_video_seedance.py`, `generate_video_ltx.py` (+ `generate_video_veo.py`) | **Gemini Omni 1.1 Flash**, **FLUX 3 Video** (BFL), Seedance 2.5 / 2.0 / mini, LTX 2.5 / 2.3; Veo 3.1 fallback |
 | Voiceover / music / SFX | `generate_tts.py`, `generate_music.py`, `generate_sfx.py` | ElevenLabs |
 | Asset hosting | `media_host.py` auto-uploads local refs | Amazon S3 (presigned or public URL); only needed for Seedance / Seedream |
@@ -53,7 +53,7 @@ Required keys (free tiers exist for most):
 
 | Key | Provider | Used by |
 |---|---|---|
-| `OPENAI_API_KEY` | [OpenAI](https://platform.openai.com/api-keys) | GPT Image 2 stills |
+| `OPENAI_API_KEY` | [OpenAI](https://platform.openai.com/api-keys) | GPT Image stills (default 2.5 Sunburst; `GPT_IMAGE_MODEL` overrides) |
 | `GEMINI_API_KEY` | [Google AI Studio](https://aistudio.google.com/apikey) | Omni video, reference-video analysis, Nano Banana / Veo fallbacks |
 | `ELEVENLABS_KEY`, `ELEVENLABS_VOICE` | [ElevenLabs](https://elevenlabs.io) | voice, music, SFX |
 | `ARK_API_KEY` | [BytePlus Ark](https://console.byteplus.com/ark) | Seedance 2.5 / 2.0, Seedream 5 |
@@ -68,7 +68,7 @@ Required keys (free tiers exist for most):
 python scripts/analyze_reference.py --input "https://www.youtube.com/watch?v=..." \
   --goal "30s vertical product promo for X" --brand X --output refs/analysis
 
-# 1. Storyboard still (GPT Image 2)
+# 1. Storyboard still (GPT Image 2.5 Sunburst, the default)
 python scripts/generate_image_gpt.py \
   --prompt "A narrow Kyoto street at dusk, lanterns lit, light rain" \
   --output scene_01.png --aspect 16:9
@@ -104,7 +104,7 @@ See [`SKILL.md`](SKILL.md#step-6-assemble-with-hyperframes) and [`reference/hype
 
 | Topic | File |
 |---|---|
-| GPT Image 2 stills | [`reference/gpt-image.md`](reference/gpt-image.md) |
+| GPT Image 2 / 2.5 stills (models, migration A/B, prompting) | [`reference/gpt-image.md`](reference/gpt-image.md) |
 | Gemini Omni video | [`reference/omni.md`](reference/omni.md) |
 | FLUX 3 Video (modes, keyframes, multi-shot, dialogue, draft workflow) | [`reference/flux3.md`](reference/flux3.md) |
 | FLUX 3 camera & style vocabulary (BFL cheat sheet: shot sizes, angles, moves, focus, lenses, time, light, transitions, rigs, VFX, art direction) | [`reference/flux3-camera.md`](reference/flux3-camera.md) |
@@ -140,6 +140,17 @@ SKILL.md gained: native product sections, word-synced editing, archival footage 
 `SHOT N / HARD CUT` multi-shot in one generation, `--draft` → `--enhance` (⅓-cost drafts re-rendered at full quality from the cached bundle),
 `--upscale`, `--download` recovery, `--dry-run`; `reference/flux3.md` (API facts from the OpenAPI spec + the full prompting doctrine);
 `cost_report.py` prices FLUX sidecars; `analyze_reference.py` can recommend `flux3` per shot.
+
+### Added in 2.3.0 (2026-09-11)
+GPT Image 2.5 (released 2026-09-08): `generate_image_gpt.py --model flare|sunburst` (`gpt-image-2.5-flare` / `-sunburst`),
+`--quality xhigh|max`, automatic fallback to `gpt-image-2` when the key's project has no 2.5 access (`--no-fallback` to fail),
+tokens + estimated $ printed per call, `GPT_IMAGE_MODEL` default override; **default still model = `gpt-image-2.5-sunburst`**
+(after a 4-case A/B against GPT Image 2 and Flare). New `compare_image_models.py` runs OpenAI's
+migration A/B (same prompt/refs/size/quality across models → `compare.html` + `results.json`). `reference/gpt-image.md`
+rewritten for 2.5; `reference/nano-banana.md` repaired (a bulk banner insert had corrupted headings and code comments).
+Fixes from an adversarial audit: `--aspect 16:9 --size 1K` is now a true 16:9 (1536×864; the old 1536×1024 is `--aspect 3:2`),
+4:3 / 3:4 4K presets now fit the 8.29 MP limit, a `--mask` no longer leaks into the reference images, and cost bookkeeping
+can never trigger a second (billed) generation.
 
 ### Server (shared Linux box) notes
 - Keys never live in the skill folder. Ship `config.env.example`; on a server make `~/config.env` a **loader** that sources

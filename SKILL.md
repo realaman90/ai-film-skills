@@ -1,13 +1,13 @@
 ---
 name: ai-film-studio
 description: |
-  AI film production studio with pre-built scripts: analyze inspiration/reference videos (Gemini), write script + storyboard, generate stills (GPT Image 2; Seedream 5 / Nano Banana as fallbacks), video (Gemini Omni 1.1 Flash, FLUX 3 Video, Seedance 2.5/2.0, LTX 2.5/2.3; Veo 3.1 fallback), audio (ElevenLabs), and assemble the final cut with HyperFrames (HTML→MP4; replaced Remotion) or ffmpeg.
+  AI film production studio with pre-built scripts: analyze inspiration/reference videos (Gemini), write script + storyboard, generate stills (GPT Image 2.5 Sunburst by default; Flare for previs; GPT Image 2 / Seedream 5 / Nano Banana as fallbacks), video (Gemini Omni 1.1 Flash, FLUX 3 Video, Seedance 2.5/2.0, LTX 2.5/2.3; Veo 3.1 fallback), audio (ElevenLabs), and assemble the final cut with HyperFrames (HTML→MP4; replaced Remotion) or ffmpeg.
   Use when: creating short films, ads, product promos, brand films, social reels, storyboards, video scenes, voiceovers, music, sound effects, or any AI-powered media creation — especially "make one like this reference video".
   Trigger words: film, movie, video, ad, commercial, promo, product video, reel, storyboard, animate, scene, voiceover, narration, soundtrack, clip, short film, inspiration video, reference video.
 user-invocable: true
 metadata:
   author: realaman90
-  version: "2.2.0"
+  version: "2.3.0"
   homepage: "https://github.com/realaman90/skills"
 ---
 
@@ -45,10 +45,12 @@ Rules of thumb:
 |------|------|
 | **Analyze inspiration video(s) → brief + shot plan** | `python scripts/analyze_reference.py --input ref.mp4 --input "https://youtube.com/..." --goal "30s 9:16 promo for X" --brand X --output refs/analysis` |
 | Check available Gemini models | `python scripts/list_models.py [--filter image\|video]` |
-| **Generate storyboard still (GPT Image 2)** | `python scripts/generate_image_gpt.py --prompt "..." --output scene.png [--aspect 9:16] [--size 2K] [--quality high]` |
+| **Generate still (GPT Image 2.5 Sunburst — default)** | `python scripts/generate_image_gpt.py --prompt "..." --output scene.png [--aspect 9:16] [--size 2K] [--quality high]` |
 | Still with character + set refs | `python scripts/generate_image_gpt.py --prompt "Image 1 = character, image 2 = room ..." --ref char.png --ref set.png --output scene.png` |
 | Inpaint / edit a still | `python scripts/generate_image_gpt.py --prompt "..." --edit src.png [--mask m.png] --output out.png` |
 | Transparent logo / overlay | `python scripts/generate_image_gpt.py --prompt "..." --aspect 1:1 --transparent --output logo.png` |
+| Faster previs / coverage, or the old model | `--model flare` (2.5 small model, ~12 s) · `--model 2` (GPT Image 2); a key without 2.5 access falls back to `gpt-image-2` automatically |
+| **A/B image models before switching** | `python scripts/compare_image_models.py --prompt "..." [--ref r.png] --quality medium --runs 2 --out refs/ab/x` → `compare.html` |
 | Still via Seedream 5 (BytePlus; feeds Seedance faces) | `python scripts/generate_image_byteplus.py --prompt "..." --output scene.png` |
 | Still via Nano Banana (fallback) | `python scripts/generate_image_gemini.py --prompt "..." [--model pro] --output scene.png` |
 | **Video from still (Gemini Omni)** | `python scripts/generate_video_omni.py --prompt "..." --image scene.png --duration 6 --output scene.mp4` |
@@ -107,7 +109,7 @@ node --version                    # 22+ for HyperFrames (npx fetches hyperframes
 ```
 
 `config.env` must define:
-- `OPENAI_API_KEY` — OpenAI (GPT Image 2 stills)
+- `OPENAI_API_KEY` — OpenAI (GPT Image stills, default `gpt-image-2.5-sunburst`; optional `GPT_IMAGE_MODEL` overrides it, see [reference/gpt-image.md](reference/gpt-image.md))
 - `GEMINI_API_KEY` — Google AI Studio (Omni video, **reference-video analysis**, Nano Banana / Veo fallbacks)
 - `ELEVENLABS_KEY`, `ELEVENLABS_VOICE` — ElevenLabs (voice, music, SFX)
 - `ARK_API_KEY` — BytePlus Ark (Seedance 2.5/2.0, Seedream 5)
@@ -170,7 +172,7 @@ every scene. Non-directors approve better from a sheet than from a chat thread.
 # value shift, coverage table, dialogue native+en, continuity, previs image key) — schema in scripts/director_sheet.py
 python3 scripts/director_sheet.py build --plan v3/sheet/plan.json --out v3/sheet/sheet.html --images v3/previs v2/refs
 ```
-- Previs: one still per scene (GPT Image 2, 1K medium, cast sheets as `--ref`, the first wide shot as the prompt) so the
+- Previs: one still per scene (`--model flare`, 1K medium, cast sheets as `--ref`, the first wide shot as the prompt) so the
   reviewer sees *how it will appear*; put them in an images dir as `previs_<sceneId>.jpg`.
 - **In Claude Code:** publish `sheet.html` with the Artifact tool and `capabilities: {db: {}}`. Approvals and notes are
   stored per scene in the artifact db (collection `reviews`, doc id = scene id). Read them back with
@@ -429,7 +431,7 @@ threshold, Nano Banana geometry drift) and fixes.
 
 ## Prompting Cheat Sheet
 
-- **Images (GPT Image 2):** `[Subject + adjectives] + [Action] + [Location] + [Composition/Camera] + [Light] + [STYLE_LOCK]` — full sentences, brief an art director. Quote any on-image text (*the label reads "NORRA"*). Name what each `--ref` is for. See [reference/gpt-image.md](reference/gpt-image.md).
+- **Images (GPT Image 2 / 2.5):** `[Subject + adjectives] + [Action] + [Location] + [Composition/Camera] + [Light] + [STYLE_LOCK]` — full sentences, brief an art director; labelled SCENE / SUBJECT / DETAILS / CONSTRAINTS for complex frames. Quote any on-image text and say how often it appears (*the label reads "NORRA", exactly once*). Name what each `--ref` is for. Edits: "change only X" + the preserve list, one change per turn, previous output as the next `--edit`. Same prompts work on 2.5 — compare before rewriting. See [reference/gpt-image.md](reference/gpt-image.md).
 - **Gemini Omni:** *"In a single continuous shot, [camera rig + move]. [What changes, with timing: 'after 3 seconds ...']. [Light]. Audio: [what you want] — no music / no dialogue if unwanted."* Refs as `<IMAGE_REF_n>`. Edits: short + *"Keep everything else the same."* See [reference/omni.md](reference/omni.md).
 - **In-model effects vs. post:** ask a video model for *diegetic* effects only (smoke, light, particles, physical transformations). Text, logos, numbers and UI always go through HyperFrames (see Intake).
 - **LTX 2.3 / 2.5:** one flowing present-tense paragraph; i2v = describe the *change*, not the subject; never mention particles/dust/fluids unless wanted; "Camera holds." for static.
@@ -444,14 +446,15 @@ threshold, Nano Banana geometry drift) and fixes.
 
 | Problem | Fix |
 |---------|-----|
-| Model not found | `python scripts/list_models.py` — names change; LTX `ltx-2-*` ids retired Aug 2026; Omni = `gemini-omni-1.1-flash`; GPT Image = `gpt-image-2` |
+| Model not found | `python scripts/list_models.py` — names change; LTX `ltx-2-*` ids retired Aug 2026; Omni = `gemini-omni-1.1-flash`; GPT Image = `gpt-image-2`, `gpt-image-2.5-flare`, `gpt-image-2.5-sunburst` |
+| GPT Image 2.5: `Project … does not have access to model` | not rolled out to that project yet or the org needs API Organization Verification (platform.openai.com → Settings → Organization); the script falls back to `gpt-image-2` unless `--no-fallback` |
 | Omni: `no video in response` / HTTP 4xx | check the prompt for policy triggers; editing/extending uploaded video is unavailable in EEA/CH/UK; recover a finished output with `--download <interaction_id>` |
 | Omni `--upscale` → "Exactly one input video is required for edit task" | uploaded-video edits are blocked in EEA/CH/UK; the script now refines the original interaction from `<clip>.mp4.json` (`--previous`) — keep sidecars next to clips |
 | HyperFrames `gsap_exit_missing_hard_kill` | a fade ends within ~0.1 s of the next clip's `data-start` — move it earlier or add a `tl.set` |
 | Overlay element sits in the wrong place after a templating pass | an unevaluated `{FH …}` in a plain string → invalid CSS → class position wins; `grep -o 'top:{F[HW]' index.html` |
 | Highlight rings / cursor off the UI element | never guess: `measure_ui.py` and map css → frame |
 | Omni clip too short / long | there is no duration field — `--duration N` writes it into the prompt; chain `--extend` for > 10 s |
-| GPT Image 2 rate limit (5 img/min tier 1) | generate ≤4 stills in parallel; use `--quality medium` for coverage |
+| GPT Image rate limit (5 img/min tier 1, same for 2.5) | generate ≤4 stills in parallel; use `--quality medium` for coverage |
 | Seedance `InputImageSensitiveContentDetected` | photoreal face → use Omni/LTX, or Seedream 5 text-only still → Seedance ([reference/seedance.md](reference/seedance.md)) |
 | `media_host: no hosting configured` / S3 upload failed | set `S3_BUCKET` + `S3_REGION` in `~/config.env`, run `python scripts/media_host.py check`; without `S3_PUBLIC_URL` the script hands Ark a 24 h presigned URL (bucket can stay private) |
 | Seedance `InvalidParameter.TaskTypeConstraint/Mismatch` | edit/extend/first-frame need `ratio=adaptive` (script forces), edit needs `duration=-1` and edit/remove/replace words in the prompt |

@@ -32,9 +32,13 @@ if [ -e "$TARGET" ]; then
 fi
 
 HF_VERSION="${HYPERFRAMES_VERSION:-0.8.27}"
+# Resolve both paths BEFORE any cd: $0 and TARGET may be relative (e.g. `bash scripts/new_hyperframes_project.sh a/film`).
+SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PARENT="$(dirname "$TARGET")"
 NAME="$(basename "$TARGET")"
 mkdir -p "$PARENT"
+PARENT="$(cd "$PARENT" && pwd)"
+TARGET="$PARENT/$NAME"
 cd "$PARENT"
 
 echo "Scaffolding HyperFrames $HF_VERSION project at $TARGET ($ASPECT -> $RES)..."
@@ -44,7 +48,6 @@ HYPERFRAMES_SKIP_SKILLS=1 npx --yes "hyperframes@$HF_VERSION" init "$NAME" \
 
 mkdir -p "$TARGET/assets/clips" "$TARGET/assets/audio" "$TARGET/assets/images" "$TARGET/renders"
 
-SKILL_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 echo ""
 echo "Ready. Next steps:"
 echo "  1. Copy assets:      cp clips/*.mp4 $TARGET/assets/clips/   (mp3/png likewise)"

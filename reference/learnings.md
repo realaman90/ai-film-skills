@@ -732,3 +732,52 @@ prompts live in the project (`refs/timeline_v1_jury.json`, `refs/timeline_v2_jur
   kaleidoscope, 90s camcorder 4:3). Kinetic typography is a documented capability — brand type still goes through HyperFrames.
 - Nothing here has been run yet; the first live tests should be the quick-cuts montage (count the cuts with `select='gt(scene,0.3)'`) and a
   Lazy Susan packshot.
+
+## 2026-09-07 — FLUX 3: the locked-frame time-compression that works (KontentPlus beat 1)
+
+- **Timed keyframes + `HARD CUT` = a reliable "day in N cuts".** Three GPT Image 2 edits of ONE base still (only weather, props, extras and
+  the lead's hair changed) as `--keyframe 0:a --keyframe 4:b --keyframe 8:c --duration 12`: FLUX 3 kept every keyframe as a clean cut,
+  no morphing, framing pixel-identical, and each shot's business (a deck sliding, a tablet tap, a tote dropped) played inside its shot.
+  72 credits for 12 s draft. This beats three separate 5 s takes cut by hand, which the client read as "forced".
+- **Don't ask the model to split one sentence across cuts.** An in-model relay ("So, tell us—" / "—about your—" / "—brand!") stretched the
+  line to 8 s with 3–4 s gaps. Give each shot a complete line that starts the moment the shot begins ("says at once…", "the shot opens
+  mid-action"); trim dead tails inside shots at the model's own cut points instead of adding cuts.
+- Single 5 s dialogue takes carry ~2 s of idle before the line. Prompt the speaker "already mid-breath as the shot begins" and cut on
+  the word (whisper-1 `timestamp_granularities[]=word`) if you must edit by hand. FLUX sometimes appends a stray word ("Yeah") after the
+  line — fade it under the hold or ask for silence after the line.
+- No `drawtext` in this ffmpeg: render text overlays as transparent PNGs with headless Chrome (`--default-background-color=00000000`)
+  and `overlay` them.
+- **Emotion needs coverage, not adjectives.** A locked wide (faces ~40 px) cannot show a late smile or an exhale no matter how the prompt
+  is written; both the client and the Gemini jury read it as "stiff / AI". The fix that worked: a second keyframed generation of the
+  protagonist's medium close-up per beat (same seasons/wardrobe, the other side's lines "from off-screen"), intercut wide → close-up.
+  Scale contrast across the cut is also what FLUX 3 wants. Budget one CU layer per dialogue beat from the start.
+- **FLUX 3 `draft_enhance` does NOT preserve timing.** Same seed, same shots, but the enhanced render re-synthesised speech (lines
+  landed up to 0.6 s later and were spoken slower) and moved a HARD CUT from 3.1 s to 1.6 s in one piece. Any word-timed or
+  cut-detected edit must be re-measured on the enhanced files, never carried over from the draft — or cut the drafts and enhance
+  the *assembled* segments instead.
+- **Assembly rule that prevents jump cuts: time never rewinds.** When intercutting a wide and a close-up of the same moment, make the
+  WIDE the master (continuous picture + audio), overlay the close-up as picture-only inserts aligned to the same words (whisper-1 word
+  timing on both takes), and resume the master at the point time has reached — never re-enter the wide at an earlier timestamp and
+  never replay its audio. Cutting segments independently ("wide 0–8.5, CU, wide 9.1–10") produced visible jump cuts and a doubled room
+  tone that the client called "unpredictable". Script: kontentplus-ad/drafts/assemble_master.py (candidate for scripts/).
+
+## 2026-09-11 — GPT Image 2.5 (Flare / Sunburst): adopt it without breaking runs
+
+- **A launch is not API access.** Images 2.5 shipped 2026-09-08, but on 2026-09-11 all three of our OpenAI projects (Mac, Fastlane,
+  KontentPlus) returned `403 model_not_found — Project … does not have access to model gpt-image-2.5-flare`. Probe first, for free:
+  `GET /v1/models/<id>`. Access may need API Organization Verification; it also rolls out per project.
+- `generate_image_gpt.py --model flare|sunburst` falls back to `gpt-image-2` with a NOTE, so pipelines can name the new model today.
+  **Evaluate with `--no-fallback`** (or `compare_image_models.py`, which never falls back) — otherwise an "A/B" quietly compares
+  gpt-image-2 with itself.
+- OpenAI's migration rule, which matches our jury lesson: first comparison at identical prompt / refs / size / quality; the same
+  quality label is not the same quality across models; judge identity, text, unwanted changes and alpha before latency and cost.
+- **First A/B (4 film stills, medium):** Flare and Sunburst both beat or matched gpt-image-2 on every case and were 2–3.6× faster at
+  ~¼–⅓ of the cost (fewer output tokens at the same quality label). Sunburst gave the most photographic office still and the
+  cleanest label typography at the same price as Flare. Plan: Flare for previs, Sunburst for hero/first frames — see `gpt-image.md`.
+- **Access flaps right after enabling a model** on a project (200 then `model_not_found` minutes apart on the same key). Don't
+  conclude "no access" from one call; the fallback keeps runs alive, `compare_image_models.py` shows the gaps honestly.
+- **`new_hyperframes_project.sh` exited non-zero when called as `bash scripts/…`** (resolved `$0` after `cd`); it looked fine only
+  because the output was piped into `tail`. Fixed 2026-09-11 — resolve paths before any `cd`, and check `$?`, not the pipe.
+- **Docs hygiene:** a bulk find/replace that inserted the "Nano Banana is now the FALLBACK" banner matched every `# ` — headings AND
+  Python comments inside code blocks — and put 36 copies into `reference/nano-banana.md`, which were committed. Insert banners with a
+  line-anchored edit under the H1 and check `grep -c '<banner>' file` = 1 afterwards.

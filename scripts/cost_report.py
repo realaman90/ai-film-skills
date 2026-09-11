@@ -16,7 +16,7 @@ RATES = {
     "seedance_per_s": 0.21,                                                 # Seedance 2.5 720p (≈ $1.50 per 7 s take)
     "ltx_per_s": 0.06,                                                      # LTX 2.5 fast
     "flux_per_s": {"draft": 0.06, "hd": 0.17, "fhd": 0.29, "v2v_draft": 0.12, "v2v_hd": 0.43, "v2v_fhd": 0.54},  # FLUX 3 Video, Sept 2026; settled credits win when present
-    "gpt_image": {"low": 0.016, "medium": 0.063, "high": 0.25},              # gpt-image-2 at 1536×1024
+    "gpt_image": {"low": 0.006, "medium": 0.015, "high": 0.035},             # gpt-image-2.5-sunburst (default) at 1K, measured 2026-09-11; gpt-image-2 was ~0.016/0.063/0.25
     "gemini_video_call": 0.02,                                              # 3.8 Flash on a ≤60 s clip
     "elevenlabs_tts_1k_chars": 0.30, "elevenlabs_music_track": 0.50, "elevenlabs_sfx": 0.05,
 }

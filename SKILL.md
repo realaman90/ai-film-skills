@@ -85,6 +85,7 @@ Rules of thumb:
 | **Render final film** | `scripts/render_hyperframes.sh /tmp/my-film/film renders/film.mp4 [--quality draft] [--format gif]` |
 | Prompting: images | [reference/gpt-image.md](reference/gpt-image.md) · [reference/seedream.md](reference/seedream.md) · [reference/nano-banana.md](reference/nano-banana.md) (fallback) |
 | Prompting: video | [reference/omni.md](reference/omni.md) · [reference/flux3.md](reference/flux3.md) · [reference/flux3-camera.md](reference/flux3-camera.md) (camera & style vocabulary) · [reference/ltx.md](reference/ltx.md) · [reference/seedance.md](reference/seedance.md) · [reference/veo.md](reference/veo.md) (fallback) |
+| **Camera angles (every model)** | [reference/camera-angles.md](reference/camera-angles.md) — angle = height · pitch · roll · facing · whose eyes; 19 cards: story job, what to write, the model's wrong cousin and its tell |
 | Voice / music / SFX | [reference/elevenlabs.md](reference/elevenlabs.md) |
 | **Inspiration analysis guide** | [reference/inspiration.md](reference/inspiration.md) |
 | **HyperFrames assembly guide** | [reference/hyperframes.md](reference/hyperframes.md) |
@@ -157,10 +158,11 @@ No reference available? Skip to Step 1 but still write a STYLE_LOCK by hand (med
 No still before the concept is locked in words, no video before the shot list is approved. Four gates: **G0** brief
 reflected back → **G1** one concept locked (spine, but/therefore, wound/stakes/turn, ending first) → **G2** timed beat
 sheet with value shifts and an *audience-knowledge ledger* (every fact the ending needs is planted on screen earlier)
-→ **G3** shot list with a reason for every camera move and a 30–50-word **identity string** per character, pasted
-verbatim into every prompt from here on. Prompts name bodies and objects, never emotions or "cinematic". When a
-take fails, name the failure code and climb the cost ladder (prompt edit → parameter → regenerate → keyframe →
-re-plan → fix in the edit). The vendored source skills are in `vendor/` (see `vendor/VENDOR.md`).
+→ **G3** shot list with a reason for every camera move and angle — angles written as dials (height · pitch · roll ·
+facing · whose eyes, [reference/camera-angles.md](reference/camera-angles.md)) — and a 30–50-word **identity string**
+per character, pasted verbatim into every prompt from here on. Prompts name bodies and objects, never emotions or
+"cinematic". When a take fails, name the failure code and climb the cost ladder (prompt edit → parameter → regenerate
+→ keyframe → re-plan → fix in the edit). The vendored source skills are in `vendor/` (see `vendor/VENDOR.md`).
 
 #### The director's sheet (Gates 2–3 as one reviewable page)
 
@@ -229,7 +231,7 @@ python scripts/generate_image_gpt.py --prompt "[STYLE_LOCK] Close-up of the work
 One still per scene, passing every relevant ref (character + set + product, up to 4):
 ```bash
 python scripts/generate_image_gpt.py \
-    --prompt "Image 1 is the character (keep the face identical), image 2 is the set (keep the layout). [STYLE_LOCK] [CHARACTER LOCK] [SET LOCK] [SCENE: shot size, camera, action, light]" \
+    --prompt "Image 1 is the character (keep the face identical), image 2 is the set (keep the layout). [STYLE_LOCK] [CHARACTER LOCK] [SET LOCK] [SCENE: shot size, angle as visible evidence, action, light]" \
     --ref refs/character.png --ref refs/set_wide.png \
     --output storyboard/scene_02.png --aspect 9:16 --quality medium
 ```
@@ -238,6 +240,8 @@ Generate 3–4 in parallel (background processes). Build a contact sheet and **s
 ffmpeg -y -i storyboard/scene_%02d.png -filter_complex "scale=480:-1,tile=4x3:margin=4:padding=4" storyboard/contact_sheet.png
 ```
 Consistency checklist: same face / same room layout / same props / same light direction / same palette across scenes.
+Angle check per still: the tell list in [reference/camera-angles.md](reference/camera-angles.md#review-check-the-tell) —
+once a still goes to image-to-video it owns the angle, so fix a drifted angle here, not in the clip.
 **Do not generate video until ALL stills are approved.** (Stills cost cents; clips cost dollars.)
 
 ### Step 4: Video Clips
@@ -263,7 +267,7 @@ with **talking** or **more than one angle** → FLUX 3; a hero shot you will ite
 reference → Seedance 2.5; coverage at scale or a fix inside a clip → LTX. Details: [reference/flux3.md](reference/flux3.md).
 
 ```bash
-# Most scenes: image-to-video, prompt = ONLY [CAMERA] + [ACTION] + [LIGHT CHANGE] + [AUDIO]; the still carries the look
+# Most scenes: image-to-video, prompt = ONLY [CAMERA MOVE] + [ACTION] + [LIGHT CHANGE] + [AUDIO]; the still carries the look and the angle (never name a different angle here)
 python scripts/generate_video_ltx.py --prompt "Camera holds. The rim light breathes brighter over six seconds. Quiet room tone." --image storyboard/scene_01.png --output clips/scene_01.mp4
 python scripts/generate_video_omni.py --prompt "In a single continuous shot, slow dolly forward. Ambient: crickets, water. No music." --image storyboard/scene_02.png --duration 6 --output clips/scene_02.mp4
 # FLUX 3: dialogue scene from a still — draft at ⅓ cost, then enhance the keeper (same generation, no re-roll)
@@ -282,7 +286,9 @@ Then **convert every clip to CFR** and trim to the best 2–3.5 s for ads (AI cl
 ```bash
 mkdir -p clips/cfr && for f in clips/*.mp4; do ffmpeg -y -i "$f" -r 24 -vsync cfr -c:v libx264 -preset fast -crf 18 -c:a aac "clips/cfr/$(basename "$f")"; done
 ```
-Review each clip (thumbnail strip): face/product match, camera executed, no jitter, physics OK. Regenerate failures.
+Review each clip (thumbnail strip): face/product match, camera executed, angle held (the tell: horizon, verticals,
+ceiling vs floor, which eyes show — [reference/camera-angles.md](reference/camera-angles.md#review-check-the-tell)), no
+jitter, physics OK. Regenerate failures; for a drifted angle, add the cousin's ban line first.
 
 ### Step 5: Audio
 
@@ -432,6 +438,7 @@ threshold, Nano Banana geometry drift) and fixes.
 ## Prompting Cheat Sheet
 
 - **Images (GPT Image 2 / 2.5):** `[Subject + adjectives] + [Action] + [Location] + [Composition/Camera] + [Light] + [STYLE_LOCK]` — full sentences, brief an art director; labelled SCENE / SUBJECT / DETAILS / CONSTRAINTS for complex frames. Quote any on-image text and say how often it appears (*the label reads "NORRA", exactly once*). Name what each `--ref` is for. Edits: "change only X" + the preserve list, one change per turn, previous output as the next `--edit`. Same prompts work on 2.5 — compare before rewriting. See [reference/gpt-image.md](reference/gpt-image.md).
+- **Camera angles (every model):** write the angle as what the frame shows — camera height against the subject's eyes, the tilt, what sits above and below the head, how many eyes show — then ban the model's usual cousin (*not top-down*, *the camera does not rotate*, *no part of him in frame*). Visible evidence beats degrees and mood words. Cards, drift table and review list: [reference/camera-angles.md](reference/camera-angles.md).
 - **Gemini Omni:** *"In a single continuous shot, [camera rig + move]. [What changes, with timing: 'after 3 seconds ...']. [Light]. Audio: [what you want] — no music / no dialogue if unwanted."* Refs as `<IMAGE_REF_n>`. Edits: short + *"Keep everything else the same."* See [reference/omni.md](reference/omni.md).
 - **In-model effects vs. post:** ask a video model for *diegetic* effects only (smoke, light, particles, physical transformations). Text, logos, numbers and UI always go through HyperFrames (see Intake).
 - **LTX 2.3 / 2.5:** one flowing present-tense paragraph; i2v = describe the *change*, not the subject; never mention particles/dust/fluids unless wanted; "Camera holds." for static.

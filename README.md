@@ -108,6 +108,7 @@ See [`SKILL.md`](SKILL.md#step-6-assemble-with-hyperframes) and [`reference/hype
 | Gemini Omni video | [`reference/omni.md`](reference/omni.md) |
 | FLUX 3 Video (modes, keyframes, multi-shot, dialogue, draft workflow) | [`reference/flux3.md`](reference/flux3.md) |
 | FLUX 3 camera & style vocabulary (BFL cheat sheet: shot sizes, angles, moves, focus, lenses, time, light, transitions, rigs, VFX, art direction) | [`reference/flux3-camera.md`](reference/flux3-camera.md) |
+| Camera angles for every model (five dials; 19 cards with the story job, what to write, the model's wrong cousin and its tell) | [`reference/camera-angles.md`](reference/camera-angles.md) |
 | Nano Banana prompting (fallback) | [`reference/nano-banana.md`](reference/nano-banana.md) |
 | Veo 3.1 prompting (fallback) | [`reference/veo.md`](reference/veo.md) |
 | Seedance 2.5 / 2.0 (incl. content policy gotchas) | [`reference/seedance.md`](reference/seedance.md) |

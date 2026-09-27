@@ -781,3 +781,21 @@ prompts live in the project (`refs/timeline_v1_jury.json`, `refs/timeline_v2_jur
 - **Docs hygiene:** a bulk find/replace that inserted the "Nano Banana is now the FALLBACK" banner matched every `# ` — headings AND
   Python comments inside code blocks — and put 36 copies into `reference/nano-banana.md`, which were committed. Insert banners with a
   line-anchored edit under the H1 and check `grep -c '<banner>' file` = 1 afterwards.
+
+## 2026-09-27 — Camera angles: write the evidence, ban the cousin, check the tell (read from Melies' Cinematic Bible)
+
+- Source: melies.co/cinematic-techniques, category *Camera Angles* (19 entries; the bible has 424 across 13 categories). Read by
+  hand; its terms prohibit scraping, so nothing was imported — `reference/camera-angles.md` is our own wording and prompts.
+- **An angle is five independent dials** — height · pitch · roll · facing · whose eyes. Our tables named angles as single words, and
+  a model fills every unnamed dial with its default (portraits drift to a slight low "poster" angle, faces to three-quarter).
+- **Every angle has a wrong cousin the model drifts to:** high → drone top-down, low → worm's-eye, bird's-eye → step-stool high angle
+  or product flat-lay, overhead → trapezoid high angle, Dutch → pitch or a rotating camera, incline → full Dutch, profile →
+  three-quarter, POV → OTS, first-person → clean POV, object POV → drifting drone, fourth wall → interview eyeline, trunk → car-park
+  low angle. The ban line goes into the prompt; the tell goes into review.
+- **Prompt the evidence, review the same evidence.** Matches DirectorSKILL's note that models ignore metres but keep visible geometry.
+  The six-point tell list (horizon, verticals, ceiling vs floor, eyes, frame edges, near foreground) now sits in SKILL.md Steps 3–4;
+  G3 writes angles as dials, and the director's sheet shows `shots[].angle` under each shot.
+- Nothing here has been run yet. First live tests: (1) a seated eye-level single on GPT Image 2.5 with and without *"no ceiling in
+  frame, no upward tilt"* — count the stills that still show the ceiling; (2) an Omni high-angle i2v with and without *"locked
+  elevated camera, no drone move"*; (3) a static 20° Dutch on FLUX 3 — does the cant hold without rotating?
+- The same card shape can take camera movement (86 entries), framing (25) and lighting (41) next.

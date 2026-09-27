@@ -22,7 +22,7 @@ keep developing. (For a trivial 15-second product loop, Phases 1–2 can be ligh
 | **0 Intake** | Kill shot (the ONE thing the viewer should feel/do at the end) · exact duration · platform + aspect · subject · audience · language · existing assets · recurring characters · hard constraints | G0: reflect the brief back in 5 lines |
 | **1 Concept** | 2–3 concepts, ≤120 words each: logline · dramatic question · want vs need · the one visible demo · emotional arc · style + why · open wound. Run the tests below and report verdicts | **G1 (hard): lock ONE concept in words** |
 | **2 Beats** | Timed beat sheet: `t-start–t-end · what happens · value shift (+/−) · setup/payoff carried · what the audience learns` → rendered as the **director's sheet** (`scripts/director_sheet.py`, one page, previs per scene, approve / needs-changes per scene) | G2: approve structure on the sheet |
-| **3 Shots** | Per shot: size · angle + movement (with its reason) · lens/DOF/light · sound cue · transition in · which beat it serves. Identity strings written **here**, not later | G3: approve the shot list — last cheap stop |
+| **3 Shots** | Per shot: size · angle as dials (height · pitch · roll · facing · whose eyes — [camera-angles.md](camera-angles.md)) + movement (with its reason) · lens/DOF/light · sound cue · transition in · which beat it serves. Identity strings written **here**, not later | G3: approve the shot list — last cheap stop |
 | **4 Production** | Stills → takes → audio, per `SKILL.md` Steps 2–5 | G4: approve per shot; re-roll here, not in the edit |
 | **5 Post** | Audio spine first, assemble to the beat sheet, hide seams, mix, one grade pass, deliver | — |
 

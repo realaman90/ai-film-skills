@@ -47,6 +47,9 @@ Finish them with light, audio layers and the guardrail before sending.
 
 ### Camera angles
 
+Angle cards (story job, the model's usual wrong cousin, the tell to check, the ban line) are in
+[camera-angles.md](camera-angles.md); the rows below are the FLUX phrasing.
+
 | Term | Reads as | Studio phrase |
 |---|---|---|
 | Aerial | from high above the scene | *Aerial view of a tractor drawing lines across a wet field* |

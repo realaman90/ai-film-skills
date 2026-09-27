@@ -13,7 +13,8 @@ Usage:
 Plan schema (JSON): {title, title_native?, draft?, spine, aspect, acts:{"1":"Act one — …"},
   cast:[{id,name,idstr,image?,new?}],
   scenes:[{id,n,act,title,slug,dur,purpose,learns,shift,cast:[ids],
-           shots:[{size,action,sec}], dialogue:[{kind:"line"|"narr",who,native,en}], cont, previs?, frame?, v2?}]}
+           shots:[{size,action,sec,angle?}], dialogue:[{kind:"line"|"narr",who,native,en}], cont, previs?, frame?, v2?}]}
+  shots[].angle = camera-angle dials, e.g. "seated eye · level · 3/4 left" (reference/camera-angles.md).
 Publishing: in Claude Code, publish the HTML with the Artifact tool and `capabilities: {db: {}}`; decisions land in the
 artifact db, collection `reviews`, one doc per scene id -> read them with read_db and save as decisions.json.
 Outside Claude Code the reviewer presses "Copy decisions as JSON" and sends the text back; save it as decisions.json.

@@ -50,7 +50,6 @@ is a strength — use it for packaging, titles and end cards where Nano Banana g
 import argparse
 import base64
 import os
-import re
 import sys
 import time
 
@@ -70,7 +69,7 @@ MODELS = {
     "sunburst": "gpt-image-2.5-sunburst",
 }
 FALLBACK_MODEL = "gpt-image-2"
-FALLBACK_ELIGIBLE = re.compile(r"gpt-image-2\.5-(flare|sunburst)(-\d{4}-\d{2}-\d{2})?")  # known 2.5 ids (+ dated snapshots) fall back; typos and other ids fail loudly
+FALLBACK_ELIGIBLE = {MODELS["flare"], MODELS["sunburst"]}  # only these exact 2.5 ids fall back; typos and other ids fail loudly
 DEFAULT_MODEL = os.environ.get("GPT_IMAGE_MODEL", "gpt-image-2.5-sunburst")
 QUALITIES = ["low", "medium", "high", "xhigh", "max", "auto"]
 QUALITIES_25_ONLY = {"xhigh", "max"}
@@ -170,7 +169,7 @@ def generate(prompt, output, images=(), mask=None, size="1536x864", quality="hig
             seconds = time.time() - t0
         except Exception as e:
             if is_access_error(e):
-                if fallback and FALLBACK_ELIGIBLE.fullmatch(model):
+                if fallback and model in FALLBACK_ELIGIBLE:
                     log(f"NOTE: this key has no access to {model} yet ({e}). Falling back to {FALLBACK_MODEL}. "
                         "Check the project's allowed models / API Organization Verification on platform.openai.com.")
                     model = FALLBACK_MODEL

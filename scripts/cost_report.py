@@ -87,7 +87,8 @@ def main():
         q[qual] += 1
     for qual, n in q.items():
         rates = RATES["gpt_image"][a.image_model]
-        c = n * rates.get(qual, rates["high"]); total += c; lines.append((f"Stills ({a.image_model}, {qual})", f"{n} images", c))
+        note = "" if qual in rates else " — no measured rate, priced as high"
+        c = n * rates.get(qual, rates["high"]); total += c; lines.append((f"Stills ({a.image_model}, {qual}{note})", f"{n} images", c))
     # audio
     tts = [f for f in glob.glob(f"{P}/audio/*.mp3") if not re.search(r"bgmusic|music|sfx|pulse|tick", f)]
     music = glob.glob(f"{P}/audio/*music*.mp3"); sfx = glob.glob(f"{P}/audio/sfx/*.mp3") + [f for f in glob.glob(f"{P}/audio/*.mp3") if re.search(r"sfx|tick|pulse|whoosh", f)]

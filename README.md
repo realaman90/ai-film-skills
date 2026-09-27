@@ -10,6 +10,8 @@ End-to-end AI film production for Claude Code. The agent handles creative decisi
 | Storyboard stills | `generate_image_gpt.py` (+ `generate_image_byteplus.py`, `generate_image_gemini.py`) | **GPT Image 2.5 Sunburst** (OpenAI, default; Flare and GPT Image 2 via `--model`); Seedream 5 (Ark) and Nano Banana (Gemini) as fallbacks |
 | Cinematic video | `generate_video_omni.py`, `generate_video_flux.py`, `generate_video_seedance.py`, `generate_video_ltx.py` (+ `generate_video_veo.py`) | **Gemini Omni 1.1 Flash**, **FLUX 3 Video** (BFL), Seedance 2.5 / 2.0 / mini, LTX 2.5 / 2.3; Veo 3.1 fallback |
 | Voiceover / music / SFX | `generate_tts.py`, `generate_music.py`, `generate_sfx.py` | ElevenLabs |
+| **Songs with lyrics** (lyric videos) | `generate_song.py` + `song_lyrics.py` (take scoring, line timings) | ElevenLabs Music v2.5 composition plans; local Whisper |
+| **Motion design for a concept** (no footage) | `three_global.sh`, `fetch_fonts.py`, `hf_add_sfx.mjs` + [`reference/motion-design-concept.md`](reference/motion-design-concept.md) | three.js scenes in HyperFrames (`/music-to-video`, `/faceless-explainer`) |
 | Asset hosting | `media_host.py` auto-uploads local refs | Amazon S3 (presigned or public URL); only needed for Seedance / Seedream |
 | Assembly (fast) | `assemble.py` | ffmpeg |
 | **Assembly (graphics, transitions, captions)** | `new_hyperframes_project.sh` + `build_hyperframes_timeline.py` + `render_hyperframes.sh` | [HyperFrames](https://github.com/heygen-com/hyperframes) (HTML → MP4; replaced Remotion, which lives in `legacy/`) |
@@ -116,6 +118,7 @@ See [`SKILL.md`](SKILL.md#step-6-assemble-with-hyperframes) and [`reference/hype
 | LTX 2.5 / 2.3 (every endpoint) | [`reference/ltx.md`](reference/ltx.md) |
 | ElevenLabs voice / music / SFX | [`reference/elevenlabs.md`](reference/elevenlabs.md) |
 | Inspiration / reference analysis | [`reference/inspiration.md`](reference/inspiration.md) |
+| **Motion design for a concept** (pitch the concept without a reference, song or narrator, three.js scene contract, mount traps, QA) | [`reference/motion-design-concept.md`](reference/motion-design-concept.md) |
 | HyperFrames assembly | [`reference/hyperframes.md`](reference/hyperframes.md) |
 | Hard-learned lessons | [`reference/learnings.md`](reference/learnings.md) |
 
@@ -152,6 +155,21 @@ rewritten for 2.5; `reference/nano-banana.md` repaired (a bulk banner insert had
 Fixes from an adversarial audit: `--aspect 16:9 --size 1K` is now a true 16:9 (1536×864; the old 1536×1024 is `--aspect 3:2`),
 4:3 / 3:4 4K presets now fit the 8.29 MP limit, a `--mask` no longer leaks into the reference images, and cost bookkeeping
 can never trigger a second (billed) generation.
+
+### Added in 2.4.0 (2026-09-27)
+**Motion design for a concept**: explain an idea, mechanism or decision as a motion video, **with or without a reference
+video** (with none, the agent pitches five tellings and picks the look by eye). New `reference/motion-design-concept.md`
+covers the method, the three.js scene contract for parallel builders, the mount traps and the QA bar.
+
+New scripts:
+- `generate_song.py`: ElevenLabs Music v2.5 composition plan with lyrics, returning word timestamps;
+- `song_lyrics.py`: `score` picks the take Whisper understands best; `lines` gives sung line timings;
+- `three_global.sh`: three.js as a classic-script global for HyperFrames;
+- `fetch_fonts.py`: local woff2 + `@font-face`;
+- `hf_add_sfx.mjs`: idempotent SFX cues + head scripts into `index.html`.
+
+`elevenlabs.md` gains *Songs with lyrics*, `hyperframes.md` gains the three.js + sub-composition traps, and
+`learnings.md` gains a dated entry.
 
 ### Server (shared Linux box) notes
 - Keys never live in the skill folder. Ship `config.env.example`; on a server make `~/config.env` a **loader** that sources

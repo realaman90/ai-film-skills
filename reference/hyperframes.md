@@ -164,3 +164,21 @@ Render speed on Apple Silicon: ~1.5× realtime at 1080p draft with 5 workers. Ev
   instead of a full-frame inset (builder CSS `video.clip` is cover-fit; override with the same specificity `video.era-mod`).
 - **Turn-key vertical**: `ASPECT=9:16 OUT_DIR=../film_916 python3 make_spec.py && build … --project ../film_916 && ASPECT=9:16 OUT_DIR=../film_916 python3 overlays.py`;
   the vertical project dir only needs an `assets` symlink.
+
+## three.js scenes + sub-composition mount traps (added 2026-09-27)
+
+Full write-up in [`motion-design-concept.md`](motion-design-concept.md) §5.
+
+- **Load three.js as a classic global** (`scripts/three_global.sh`). Put it in index.html `<head>` via `hf_add_sfx.mjs --head-js`,
+  and also inside each scene's `<template>`, because lint checks each file (`missing_three_script`). Modules and
+  importmaps load async, so they can lose the race with a synchronous timeline build.
+- **Drive the scene from the paused timeline with a getter/setter clock,** and render as a pure function of time. The
+  runtime seeks with events suppressed, so `onUpdate` alone leaves stale canvases. Use one renderer and one canvas per scene.
+- **At mount, the inner root loses `data-composition-id` (it moves to the host) and its id** (it becomes
+  `data-hf-authored-id`). So style and query the root as `[data-composition-id="X"]`, never `#stage[data-composition-id="X"]`.
+  Otherwise the scene renders black (the script finds no root) or in Times (the root font rule never matches).
+- **Never `visibility: visible`** inside a scene. It shows through the runtime's hidden host, and in the parallel render
+  a late scene's layer then sits over the whole video, even when snapshots look fine. Use `inherit` / GSAP `autoAlpha`.
+- **Fonts:** `fetch_fonts.py` gives local woff2 + `@font-face`. Declare it per scene; lint only auto-resolves a few families.
+- **`data-layout-allow-overlap`** counts only on the overlapping text element itself, never an ancestor.
+

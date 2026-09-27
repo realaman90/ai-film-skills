@@ -2,12 +2,13 @@
 name: ai-film-studio
 description: |
   AI film production studio with pre-built scripts: analyze inspiration/reference videos (Gemini), write script + storyboard, generate stills (GPT Image 2.5 Sunburst by default; Flare for previs; GPT Image 2 / Seedream 5 / Nano Banana as fallbacks), video (Gemini Omni 1.1 Flash, FLUX 3 Video, Seedance 2.5/2.0, LTX 2.5/2.3; Veo 3.1 fallback), audio (ElevenLabs), and assemble the final cut with HyperFrames (HTML→MP4; replaced Remotion) or ffmpeg.
-  Use when: creating short films, ads, product promos, brand films, social reels, storyboards, video scenes, voiceovers, music, sound effects, or any AI-powered media creation — especially "make one like this reference video".
-  Trigger words: film, movie, video, ad, commercial, promo, product video, reel, storyboard, animate, scene, voiceover, narration, soundtrack, clip, short film, inspiration video, reference video.
+  Also: motion design for a CONCEPT — explain an idea, mechanism or decision as a motion video (three.js + kinetic type, song-led lyric video or narrated), with or without a reference video; the skill pitches the concept itself when there is no reference, writes and generates the song (ElevenLabs lyrics), SFX and the three.js scene contract.
+  Use when: creating short films, ads, product promos, brand films, social reels, concept / explainer / motion-design videos, lyric videos, storyboards, video scenes, voiceovers, music, songs with lyrics, sound effects, or any AI-powered media creation — especially "make one like this reference video" or "explain this idea as a video".
+  Trigger words: film, movie, video, ad, commercial, promo, product video, reel, storyboard, animate, scene, voiceover, narration, soundtrack, song, lyrics, lyric video, clip, short film, inspiration video, reference video, motion design, motion video, explainer, concept video, three.js.
 user-invocable: true
 metadata:
   author: realaman90
-  version: "2.3.0"
+  version: "2.4.0"
   homepage: "https://github.com/realaman90/skills"
 ---
 
@@ -15,7 +16,8 @@ metadata:
 
 End-to-end AI film production. The agent handles the creative decisions (reference analysis, story, prompts, pacing);
 pre-built scripts handle the API plumbing. Works for **short films, ads, product promos, brand films and social reels** —
-the pipeline is the same, only Step 0 (inspiration) and the assembly template (end card, CTA, aspect) change.
+the pipeline is the same, only Step 0 (inspiration) and the assembly template (end card, CTA, aspect) change — and for
+**motion design that explains a concept** (no footage at all; see *Motion design for a concept* below).
 
 ## Intake — route before you generate anything
 
@@ -26,6 +28,7 @@ Classify the deliverable first. Only the last two rows need generative video mod
 | **Motion graphics only** — kinetic type, logo sting, stat count-up, chart, lower-third, animated headline/tweet, transparent overlay (usually < 15 s, no footage) | `/motion-graphics` (official HyperFrames workflow skill; if missing: `npx hyperframes@0.8.27 skills update motion-graphics`) | zero generation cost; deterministic, editable HTML |
 | A promo/site tour from a **website URL** | `/product-launch-video` | captures the real site; no AI footage needed |
 | A narrated **explainer from text/notes**, no URL | `/faceless-explainer` | HyperFrames generates its own visuals |
+| **Motion design for a concept**: explain an idea, mechanism or decision as a motion video (a song-led lyric video, narrated, or kinetic). **A reference video is optional**; without one, you pitch the concept | read [`reference/motion-design-concept.md`](reference/motion-design-concept.md), then `/music-to-video` (song-led) or `/faceless-explainer` (narrated) | three.js + kinetic type, zero footage; this skill adds the concept pitch, the song with lyrics, SFX and the three.js scene contract |
 | **Existing footage** that needs captions or graphic packaging | `/embedded-captions` (subtitles) · `/talking-head-recut` (titles, lower-thirds, callouts) | footage untouched |
 | A **deck / presentation** | `/slideshow` | navigable deck, not a render |
 | **Beat-synced cut of images/clips to a music track** | `/music-to-video` | beat grid drives the edit |
@@ -38,6 +41,26 @@ Rules of thumb:
 - Workflow skills (`motion-graphics`, `product-launch-video`, `faceless-explainer`, `embedded-captions`, `talking-head-recut`, `slideshow`, `music-to-video`, `general-video`, `media-use`) install **on demand**: `npx hyperframes@0.8.27 skills update <name …>` (the core `hyperframes-*` set alone does not include them). Check with `ls ~/.claude/skills`.
 - When routing to an official HyperFrames skill, hand over the brief (product, duration, aspect, brand colours/fonts, any `STYLE_LOCK` from Step 0) and let that skill run its own loop (`init → lint → check → preview → render`). Come back here only if it turns out real footage is needed.
 - Unsure? Ask one question: *"Does this need any footage of real-looking things, or is it graphics and text?"*
+
+## Motion design for a concept (no footage, reference optional)
+
+Full method: [`reference/motion-design-concept.md`](reference/motion-design-concept.md).
+
+1. **Concept first.** Write the message in one sentence and list the mechanism's 3–6 steps. Then **pitch five tellings**:
+   the subject's world, the emotion, a broken expectation, the anti-pattern inverted, an unusual format such as a song.
+   Recommend one. No reference is needed; when there is one, take its **format** (song? narrator?) before its look, and
+   delete any metric its analysis invents.
+2. **Pick the look by eye.** Show 2–3 HyperFrames frame presets (`frame-showcase.html`) and copy the chosen one in unmodified.
+3. **Sound is the spine.** For a song: lyrics as the script (verse = setup, chorus = the mechanism, spoken bridge = the
+   order) → `generate_song.py` twice → `song_lyrics.py score` → append cold-stop silence → `song_lyrics.py lines`. For a
+   narrator: `generate_tts.py --timestamps`. SFX: 4–6 sounds that belong to the metaphor.
+4. **Beat map → storyboard board → approval** (`/music-to-video`: `analyze-beatgrid.py`, frames at song sections, lyrics per group).
+5. **One builder per scene, in parallel**, each with the three.js contract block (§5 of the guide). Set up with
+   `three_global.sh` + `fetch_fonts.py`.
+6. **Assemble → `hf_add_sfx.mjs` → `hyperframes check` → render → look at the RENDER's frame sheet** (leaks show only
+   there) → `master.sh` for finals.
+
+Words carry the story; labels carry the exact numbers. Show the failure path. End on a held silence or a CTA.
 
 ## Quick Reference
 
@@ -70,6 +93,12 @@ Rules of thumb:
 | Voiceover | `python scripts/generate_tts.py --text "..." --output vo.mp3 [--timestamps subs.json]` |
 | Music | `python scripts/generate_music.py --prompt "..." --duration 120 --output score.mp3` |
 | Sound effect | `python scripts/generate_sfx.py --text "..." --duration 8 --output sfx.mp3` |
+| **Song with sung lyrics** (lyric video, jingle, spoken bridge) | `python scripts/generate_song.py --plan audio/song_plan.json --out audio/song_take1 --seed 11` (Music v2.5 composition plan; `.json` gets word timestamps) |
+| Pick the clearest take / sung line timings | `python scripts/song_lyrics.py score --plan … take1.mp3 take2.mp3` (local Whisper) · `python scripts/song_lyrics.py lines --plan … --take audio/song_take1 --out lyric_lines.json` |
+| three.js for HyperFrames scenes | `scripts/three_global.sh <project> [0.181.2]` → `assets/vendor/three.global.js` (classic-script global) |
+| Local fonts + `@font-face` block | `python scripts/fetch_fonts.py --out <project>/assets/fonts "Barlow:400,900" "IBM Plex Mono:500"` |
+| SFX cues + head scripts into `index.html` (idempotent) | `node scripts/hf_add_sfx.mjs --index index.html --cues sfx_cues.json --head-css assets/fonts/fonts.css --head-js assets/vendor/three.global.js` |
+| **Motion design for a concept** (method, three.js contract, traps) | [reference/motion-design-concept.md](reference/motion-design-concept.md) |
 | **Pick the best take per slot (Gemini)** | `python scripts/pick_takes.py --slot "1920s print" takes/a.mp4 takes/b.mp4 --out picks.json` |
 | **Quality gate — blind jury** | `python scripts/jury.py renders/cut.mp4 --brief "50 s launch film for X" --runs 2` (`--anchored prev.json --changes "..."` only to ask what moved) |
 | Phrase times from VO timestamps | `python scripts/vo_words.py audio/vo_words.json --anchor "It runs" "strategy" "every channel"` |
@@ -152,6 +181,8 @@ prompt seeds, the consistency locks you need, risks, and a do-not-copy list. Sho
 user and get sign-off before writing the script. Details: [reference/inspiration.md](reference/inspiration.md).
 
 No reference available? Skip to Step 1 but still write a STYLE_LOCK by hand (medium, lens, grade, light, palette).
+For a **concept / motion-design** piece with no reference, don't skip ahead: pitch five tellings and pick the look by eye
+(`reference/motion-design-concept.md` §1).
 
 ### Step 0.5: Directing gates — read `reference/directing.md` before Step 1
 

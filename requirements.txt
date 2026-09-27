@@ -11,3 +11,5 @@ requests>=2.31.0
 boto3>=1.34.0
 yt-dlp>=2025.1.1   # download non-YouTube reference videos for analyze_reference.py
 openai>=2.0.0     # GPT Image 2 (generate_image_gpt.py)
+# optional: song_lyrics.py score (local lyric-clarity check for song takes)
+# openai-whisper

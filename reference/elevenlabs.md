@@ -225,6 +225,35 @@ curl -X POST "https://api.elevenlabs.io/v1/music" \
 
 **Do NOT mention artist names** -- triggers TOS violation. Describe style instead.
 
+### Songs with lyrics (Music v2.5 composition plan) — `scripts/generate_song.py`
+
+`generate_music.py` forces `force_instrumental: true`. For sung words, use the **detailed** endpoint with a v2.5
+composition plan. Lyrics live in each chunk's `text` (verified 2026-09-27):
+
+```bash
+curl -X POST "https://api.elevenlabs.io/v1/music/detailed" -H "xi-api-key: $ELEVENLABS_KEY" -H "Content-Type: application/json" \
+  -d '{"model_id": "music_v2_5", "with_timestamps": true, "output_format": "mp3_44100_192", "seed": 11,
+       "composition_plan": {"chunks": [
+         {"text": "[Intro]\n{instrumental intro: pulsing synth arpeggio, kick enters on bar three}", "duration_ms": 7600,
+          "positive_styles": ["minimal synthpop", "126 bpm", "deadpan female vocal", "four-on-the-floor kick"],
+          "negative_styles": ["male vocals", "rock", "rap"], "context_adherence": "high"},
+         {"text": "[Chorus]\nEvery message gets a score\nOnly the sure ones move", "duration_ms": 15200,
+          "positive_styles": ["catchy chorus", "bright synth stabs"], "negative_styles": ["ballad"]}]}}'
+```
+
+- **Response:** `multipart/mixed`. A JSON part holds `composition_plan`, `song_metadata`, `waveform_visual` and
+  **`words_timestamps`** (`[{word, start_ms, end_ms}]`, sung words only; `{direction}` words come back 0-length).
+  The other part is the audio. The script splits them into `<out>.mp3` and `<out>.json`.
+- **Chunks:** up to 30 chunks, 3–120 s each, 3 s–10 min in total. On v2 and v2.5, chunk durations are always enforced.
+  Size them in bars: `bars × 4 × 60000 / BPM`.
+- **Cues:** `[Section]` labels, `{instrumental break}`, `{spoken, deadpan}` and `{ends abruptly on the last word}` all
+  steer the take. The first chunk's styles set the whole song.
+- **Delivery:** ~80 s songs came back in under 2 minutes, with the line timing tracking the plan to ~0.5 s. Make two
+  takes (different `seed`) and keep the one Whisper understands best (`song_lyrics.py score`).
+- **Endings:** the model doesn't produce trailing silence reliably. Add the cold stop in the file
+  (`ffmpeg -af apad=pad_dur=2.5`).
+
+
 ---
 
 ## Sound Effects

@@ -799,3 +799,19 @@ prompts live in the project (`refs/timeline_v1_jury.json`, `refs/timeline_v2_jur
   frame, no upward tilt"* — count the stills that still show the ceiling; (2) an Omni high-angle i2v with and without *"locked
   elevated camera, no drone move"*; (3) a static 20° Dutch on FLUX 3 — does the cant hold without rotating?
 - The same card shape can take camera movement (86 entries), framing (25) and lighting (41) next.
+
+## 2026-09-27 — Motion design for a concept: lessons from a three.js lyric video
+
+- **A reference can be a format, not a mood board.** A video that looks like a HUD explainer may be a music video with
+  sung lyrics. When the user points at it as "the concept", take the format. Read the analysis's audio lines before pitching.
+- **Most concept requests come with no reference.** Pitch five tellings (subject world · emotion · broken expectation ·
+  anti-pattern inverted · unusual format), recommend one, and pick the look by eye from frame presets.
+- **ElevenLabs Music v2.5 sings your lyrics** (composition-plan chunks with `text`) and returns word timestamps: lyric
+  sync for free. Two seeds, then keep the take Whisper understands best (`song_lyrics.py score`).
+- **Reference analysis invents product metrics.** Strip every claim the source facts don't make. Words carry the story;
+  labels carry the exact numbers.
+- **Parallel scene builders work** (one per scene) *if* each brief carries the three.js contract and asks the builder to
+  report its hit times. SFX then go exactly where the hits land.
+- **Two bugs passed every per-scene test and broke only in the assembled video.** Root selectors break at mount (the
+  scene renders black or in Times), and `visibility: visible` leaks through the hidden host (render only). Check the
+  assembled page, then look at the **render's** frame sheet.

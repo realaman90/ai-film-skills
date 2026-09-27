@@ -50,6 +50,7 @@ is a strength — use it for packaging, titles and end cards where Nano Banana g
 import argparse
 import base64
 import os
+import re
 import sys
 import time
 
@@ -69,7 +70,7 @@ MODELS = {
     "sunburst": "gpt-image-2.5-sunburst",
 }
 FALLBACK_MODEL = "gpt-image-2"
-FALLBACK_ELIGIBLE_PREFIX = "gpt-image-2.5"  # only 2.5 models fall back; typos and other ids fail loudly
+FALLBACK_ELIGIBLE = re.compile(r"gpt-image-2\.5-(flare|sunburst)(-\d{4}-\d{2}-\d{2})?")  # known 2.5 ids (+ dated snapshots) fall back; typos and other ids fail loudly
 DEFAULT_MODEL = os.environ.get("GPT_IMAGE_MODEL", "gpt-image-2.5-sunburst")
 QUALITIES = ["low", "medium", "high", "xhigh", "max", "auto"]
 QUALITIES_25_ONLY = {"xhigh", "max"}
@@ -169,7 +170,7 @@ def generate(prompt, output, images=(), mask=None, size="1536x864", quality="hig
             seconds = time.time() - t0
         except Exception as e:
             if is_access_error(e):
-                if fallback and model.startswith(FALLBACK_ELIGIBLE_PREFIX):
+                if fallback and FALLBACK_ELIGIBLE.fullmatch(model):
                     log(f"NOTE: this key has no access to {model} yet ({e}). Falling back to {FALLBACK_MODEL}. "
                         "Check the project's allowed models / API Organization Verification on platform.openai.com.")
                     model = FALLBACK_MODEL
@@ -228,8 +229,9 @@ def main():
     if args.mask and not (args.edit or args.ref):
         p.error("--mask needs --edit")
 
-    if args.skip_existing and os.path.exists(args.output):
-        print(f"SKIP {args.output} (exists)")
+    out_path, _ = output_format_for(args.output, args.transparent, log=lambda *_: None)  # --transparent turns .jpg into .png
+    if args.skip_existing and os.path.exists(out_path):
+        print(f"SKIP {out_path} (exists)")
         return
     if not os.environ.get("OPENAI_API_KEY"):
         print("ERROR: OPENAI_API_KEY not set. Run: source ~/config.env", file=sys.stderr)

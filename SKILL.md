@@ -75,7 +75,7 @@ Rules of thumb:
 | Phrase times from VO timestamps | `python scripts/vo_words.py audio/vo_words.json --anchor "It runs" "strategy" "every channel"` |
 | Measure UI boxes for overlays | `python scripts/measure_ui.py hero/screen.html --grep "INTERVIEWS"` |
 | **Finals: conform / join / render+master / probe** | `scripts/master.sh conform in.mp4 out.mp4 [1920 1080] [1.18]` · `master.sh join out.mp4 a.mp4:2.2 b.mp4:5.5` · `master.sh render film renders/final.mp4` · `master.sh probe final.mp4` |
-| Spend estimate from disk | `python scripts/cost_report.py /path/to/project` |
+| Spend estimate from disk | `python scripts/cost_report.py /path/to/project` (`--image-model gpt-image-2` for stills made before v2.3 or runs that fell back) |
 | Probe media | `python scripts/probe.py clips/ --format table` |
 | Assemble (ffmpeg, fast, no graphics) | `python scripts/assemble.py --videos-dir clips/ --narration vo.mp3 --music score.mp3 --output film.mp4` |
 | **Scaffold HyperFrames project** | `scripts/new_hyperframes_project.sh /tmp/my-film/film --aspect 9:16` |

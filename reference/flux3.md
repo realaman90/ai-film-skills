@@ -278,7 +278,7 @@ Prompt changes need a new draft. The sidecar stores `draft_cache_file` (the `.bi
 
 ### What to avoid
 keyword dumps · rewriting the whole prompt when one layer missed · duration < 5 or > 20 (v2v > 15) · stills that don't match the output aspect ·
-unnamed camera (drift) or unnamed audio (invented layers) · three or more camera terms in one phrase (*low aerial handheld orbit push-in*) · quoted dialogue without a visible speaker *or* a `voiceover` cue, or without "no on-screen
+unnamed camera (drift) or unnamed audio (invented layers) · camera terms past the cap — one framing + one movement, at most one lens/optic or time treatment on top (*low aerial handheld orbit push-in*) · quoted dialogue without a visible speaker *or* a `voiceover` cue, or without "no on-screen
 text, no subtitles" · re-rolling a take whose voice you liked instead of enhancing its draft · stacked personality adjectives as voice direction ·
 abstract audio ("a held breath", "subsonic dread") — least supported · overfilled short clips (dialogue clips at the end) · two mid-shots in a row
 across a HARD CUT · describing the still instead of the motion · mid-gesture endings on clips you plan to continue.

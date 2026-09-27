@@ -6,7 +6,7 @@ folder), GPT Image / Seedream / Nano Banana stills (png count, quality guessed f
 files and Gemini analysis JSONs, then prices them with the list rates below. Prices are approximate — check the
 provider dashboards for the exact bill. Update RATES when prices change.
 
-Usage: python scripts/cost_report.py /path/to/project [--seedance-dirs eras,clips] [--image-quality medium]
+Usage: python scripts/cost_report.py /path/to/project [--seedance-dirs eras,clips] [--image-quality medium] [--image-model gpt-image-2]
 """
 import argparse, glob, json, os, re, subprocess
 from collections import Counter
@@ -16,7 +16,8 @@ RATES = {
     "seedance_per_s": 0.21,                                                 # Seedance 2.5 720p (≈ $1.50 per 7 s take)
     "ltx_per_s": 0.06,                                                      # LTX 2.5 fast
     "flux_per_s": {"draft": 0.06, "hd": 0.17, "fhd": 0.29, "v2v_draft": 0.12, "v2v_hd": 0.43, "v2v_fhd": 0.54},  # FLUX 3 Video, Sept 2026; settled credits win when present
-    "gpt_image": {"low": 0.006, "medium": 0.015, "high": 0.035},             # gpt-image-2.5-sunburst (default) at 1K, measured 2026-09-11; gpt-image-2 was ~0.016/0.063/0.25
+    "gpt_image": {"gpt-image-2.5": {"low": 0.006, "medium": 0.015, "high": 0.035},   # Sunburst (default) at 1K, measured 2026-09-11
+                  "gpt-image-2": {"low": 0.016, "medium": 0.063, "high": 0.25}},     # stills made before v2.3, or runs that fell back
     "gemini_video_call": 0.02,                                              # 3.8 Flash on a ≤60 s clip
     "elevenlabs_tts_1k_chars": 0.30, "elevenlabs_music_track": 0.50, "elevenlabs_sfx": 0.05,
 }
@@ -34,6 +35,8 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("project"); ap.add_argument("--seedance-dirs", default="eras,clips", help="folders whose sidecar-less mp4s are Seedance takes")
     ap.add_argument("--ltx-dirs", default=""); ap.add_argument("--image-quality", default="medium", help="assumed quality when a still has no sidecar")
+    ap.add_argument("--image-model", default="gpt-image-2.5", choices=sorted(RATES["gpt_image"]),
+                    help="price stills at this model's rates (gpt-image-2 for projects made before v2.3 or runs that fell back)")
     a = ap.parse_args(); P = a.project; total = 0.0; lines = []
     # Omni (+ FLUX 3 sidecars, which carry provider=flux3)
     by = {}; flux_n = 0; flux_s = 0.0; flux_cost = 0.0
@@ -83,7 +86,8 @@ def main():
                 pass
         q[qual] += 1
     for qual, n in q.items():
-        c = n * RATES["gpt_image"].get(qual, 0.063); total += c; lines.append((f"Stills ({qual})", f"{n} images", c))
+        rates = RATES["gpt_image"][a.image_model]
+        c = n * rates.get(qual, rates["high"]); total += c; lines.append((f"Stills ({a.image_model}, {qual})", f"{n} images", c))
     # audio
     tts = [f for f in glob.glob(f"{P}/audio/*.mp3") if not re.search(r"bgmusic|music|sfx|pulse|tick", f)]
     music = glob.glob(f"{P}/audio/*music*.mp3"); sfx = glob.glob(f"{P}/audio/sfx/*.mp3") + [f for f in glob.glob(f"{P}/audio/*.mp3") if re.search(r"sfx|tick|pulse|whoosh", f)]

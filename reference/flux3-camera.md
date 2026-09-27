@@ -245,7 +245,8 @@ Angle cards (story job, the model's usual wrong cousin, the tell to check, the b
    generated when the exact spelling is not a brand asset. Check every letter before it ships.
 8. **Format words double as aspect:** *Cinemascope 21:9 frame* + `--ratio 21:9`; *vertical 9:16* + `--ratio 9:16`; *vintage 4:3
    camcorder* + `--ratio 4:3`. Prose and flag must agree; a 16:9 still with a 21:9 flag is cropped.
-9. **The stacking cap** goes into review: any prompt with three or more camera terms in one phrase is sent back before it is generated.
+9. **The stacking cap** goes into review: a shot with more than one framing term, more than one movement term, or more than one
+   lens/optic or time treatment on top is sent back before it is generated (*low aerial handheld orbit push-in* is the official bad example).
 
 ## Quick picks — intent → terms
 

@@ -55,6 +55,8 @@ def main():
         p.error("--models is empty")
     if args.runs < 1:
         p.error("--runs must be >= 1")
+    if args.mask and not (args.edit or args.ref):
+        p.error("--mask needs --edit")
     if args.quality in QUALITIES_25_ONLY and not all(supports_25_quality(m) for m in models):
         p.error(f"quality={args.quality} exists only on GPT Image 2.5; compare at high, or drop the non-2.5 models")
     if not os.environ.get("OPENAI_API_KEY"):

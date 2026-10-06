@@ -1,7 +1,7 @@
 ---
 name: ai-film-studio
 description: |
-  AI film production studio with pre-built scripts: analyze inspiration/reference videos (Gemini), write script + storyboard, generate stills (GPT Image 2.5 Sunburst by default; Flare for previs; GPT Image 2 / Seedream 5 / Nano Banana as fallbacks), video (Gemini Omni 1.1 Flash, FLUX 3 Video, Seedance 2.5/2.0, LTX 2.5/2.3; Veo 3.1 fallback), audio (ElevenLabs), and assemble the final cut with HyperFrames (HTML→MP4; replaced Remotion) or ffmpeg.
+  AI film production studio with pre-built scripts: analyze inspiration/reference videos (Gemini), write script + storyboard, generate stills (GPT Image 2.5 Sunburst by default; Flare for previs; GPT Image 2 / Seedream 5 / Nano Banana 2.1 as fallbacks), video (Gemini Omni 1.1 Flash, FLUX 3 Video, Seedance 2.5/2.0, LTX 2.5/2.3; Veo 3.1 fallback), audio (ElevenLabs), and assemble the final cut with HyperFrames (HTML→MP4; replaced Remotion) or ffmpeg.
   Also: motion design for a CONCEPT — explain an idea, mechanism or decision as a motion video (three.js + kinetic type, song-led lyric video or narrated), with or without a reference video; the skill pitches the concept itself when there is no reference, writes and generates the song (ElevenLabs lyrics), SFX and the three.js scene contract.
   Use when: creating short films, ads, product promos, brand films, social reels, concept / explainer / motion-design videos, lyric videos, storyboards, video scenes, voiceovers, music, songs with lyrics, sound effects, or any AI-powered media creation — especially "make one like this reference video" or "explain this idea as a video".
   Trigger words: film, movie, video, ad, commercial, promo, product video, reel, storyboard, animate, scene, voiceover, narration, soundtrack, song, lyrics, lyric video, clip, short film, inspiration video, reference video, motion design, motion video, explainer, concept video, three.js.
@@ -75,7 +75,7 @@ Words carry the story; labels carry the exact numbers. Show the failure path. En
 | Faster previs / coverage, or the old model | `--model flare` (2.5 small model, ~12 s) · `--model 2` (GPT Image 2); a key without 2.5 access falls back to `gpt-image-2` automatically |
 | **A/B image models before switching** | `python scripts/compare_image_models.py --prompt "..." [--ref r.png] --quality medium --runs 2 --out refs/ab/x` → `compare.html` |
 | Still via Seedream 5 (BytePlus; feeds Seedance faces) | `python scripts/generate_image_byteplus.py --prompt "..." --output scene.png` |
-| Still via Nano Banana (fallback) | `python scripts/generate_image_gemini.py --prompt "..." [--model pro] --output scene.png` |
+| Still via Nano Banana 2.1 (fallback) | `python scripts/generate_image_gemini.py --prompt "..." [--model nb2\|pro\|lite] --output scene.png` |
 | **Video from still (Gemini Omni)** | `python scripts/generate_video_omni.py --prompt "..." --image scene.png --duration 6 --output scene.mp4` |
 | Omni first + last frame / subject refs | `--image start.png --last-frame end.png` · `--ref char.png --ref prop.png` (address as `<IMAGE_REF_0>`) |
 | Omni draft → upscale / extend / edit | `--resolution 360p` then `--upscale draft.mp4 --resolution 4k` · `--extend clip.mp4` · `--edit clip.mp4` · `--previous <id>` |

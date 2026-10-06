@@ -7,7 +7,7 @@ End-to-end AI film production for Claude Code. The agent handles creative decisi
 | Stage | Tool | Backed by |
 |---|---|---|
 | **Inspiration / reference analysis** | `analyze_reference.py` | Gemini video understanding (`gemini-3.8-flash`), ffmpeg scene detection, yt-dlp |
-| Storyboard stills | `generate_image_gpt.py` (+ `generate_image_byteplus.py`, `generate_image_gemini.py`) | **GPT Image 2.5 Sunburst** (OpenAI, default; Flare and GPT Image 2 via `--model`); Seedream 5 (Ark) and Nano Banana (Gemini) as fallbacks |
+| Storyboard stills | `generate_image_gpt.py` (+ `generate_image_byteplus.py`, `generate_image_gemini.py`) | **GPT Image 2.5 Sunburst** (OpenAI, default; Flare and GPT Image 2 via `--model`); Seedream 5 (Ark) and Nano Banana 2.1 (Gemini) as fallbacks |
 | Cinematic video | `generate_video_omni.py`, `generate_video_flux.py`, `generate_video_seedance.py`, `generate_video_ltx.py` (+ `generate_video_veo.py`) | **Gemini Omni 1.1 Flash**, **FLUX 3 Video** (BFL), Seedance 2.5 / 2.0 / mini, LTX 2.5 / 2.3; Veo 3.1 fallback |
 | Voiceover / music / SFX | `generate_tts.py`, `generate_music.py`, `generate_sfx.py` | ElevenLabs |
 | **Songs with lyrics** (lyric videos) | `generate_song.py` + `song_lyrics.py` (take scoring, line timings) | ElevenLabs Music v2.5 composition plans; local Whisper |

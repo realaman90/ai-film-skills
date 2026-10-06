@@ -1,8 +1,14 @@
-# Nano Banana 2 -- Complete Image Prompting Guide
+# Nano Banana 2.1 -- Complete Image Prompting Guide
 
-> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2 — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+> **2026-10-06 — Nano Banana 2.1 (`gemini-nano-banana-2.1`, GA) is now the default Gemini image model** (`--model nb21`, or `2.1`).
+> Better visual design, typography, mask-based editing and subject consistency than Nano Banana 2; ~$0.034 / 1K, $0.050 / 2K, $0.076 / 4K
+> (half of Nano Banana 2 at 1K). Thinking is always on (Google default level `medium`). Up to 14 reference images. Same `generateContent`
+> call as Nano Banana 2, so the prompting frameworks below apply unchanged. Verified live 2026-10-06 (1K ~15 s; 2K 16:9 = 2752x1536).
+> Gemini image models have NO free tier: a key whose project lacks billing gets `429 RESOURCE_EXHAUSTED ... limit: 0` — enable billing, or use GPT Image.
 
-> **2026-09 update — model ids.** `generate_image_gemini.py` aliases: `--model nb2` → `gemini-3.1-flash-image` (Nano Banana 2, GA, default; the `-preview` id still works),
+> **2026-09: Nano Banana is now the FALLBACK.** Default still model is GPT Image 2.5 Sunburst — see `gpt-image.md` and `scripts/generate_image_gpt.py`. This script is `scripts/generate_image_gemini.py`.
+
+> **2026-09 update — model ids.** `generate_image_gemini.py` aliases: `--model nb2` → `gemini-3.1-flash-image` (Nano Banana 2, GA; was the default until 2026-10-06; the `-preview` id still works),
 > `--model pro` → `gemini-3-pro-image` (Nano Banana Pro — best likeness, typography and brand-text fidelity; use for hero stills, packaging, anything with words),
 > `--model lite` → `gemini-3.1-flash-lite-image` (Nano Banana 2 Lite — cheapest, for coverage/variants). Run `python scripts/list_models.py --filter image` when in doubt.
 > `--size` is ignored unless the installed `google-genai` exposes `ImageConfig.image_size` (1.47.0 does not).
@@ -14,6 +20,7 @@ Source: Google Cloud Blog "The ultimate Nano Banana prompting guide" + Google De
 
 | Model | API ID | Base | Speed | Text Rendering |
 |-------|--------|------|-------|----------------|
+| **Nano Banana 2.1** (default) | `gemini-nano-banana-2.1` | Gemini (Oct 2026) | Fast (~16 s at 1K) | Clean short labels; better typography than 2 |
 | Nano Banana 2 | `gemini-3.1-flash-image-preview` | Gemini 3.1 Flash | Fast | Short words only |
 | Nano Banana Pro | `gemini-3-pro-image-preview` | Gemini 3 Pro | Slower | Flawless sentences |
 
